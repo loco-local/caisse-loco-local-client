@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <v-toolbar class="mb-12" elevation="0">
+    <v-toolbar class="mb-0" elevation="0">
       <v-btn color="primary" @click="back" class="mt-3 mb-3 ml-3">
         Annuler
       </v-btn>
@@ -27,6 +27,9 @@
           ></v-skeleton-loader>
         </v-col>
       </v-row>
+      <v-card-subtitle class="body-1 text-left mb-4 font-italic">
+        Les prix sont taxes incluses
+      </v-card-subtitle>
       <v-row>
         <v-col v-if="categories.length === 0" cols="12" class="text-h6">
           <v-sheet height="400" class="grey--text">
@@ -42,10 +45,14 @@
           </v-col>
           <v-col cols="12" md="4" class="text-center" v-for="product in category.products"
                  :key="product.id">
-            <v-card height="150" @click="selectProduct(product)">
-              <v-card-title class="">
+            <v-card height="150" @click="selectProduct(product)" class="vh-center">
+              <v-card-title class="vh-center">
                 {{ product.name }}
               </v-card-title>
+              <v-card-subtitle v-if="product.price" class="mt-1 text-h6">
+                {{product.price | currency}}
+                <small v-if="product.isPriceInKg">/kg</small>
+              </v-card-subtitle>
               <v-card-text>
                 {{ product.description }}
               </v-card-text>
@@ -175,6 +182,7 @@ export default {
         return;
       }
       this.selectedProduct.quantity = this.productQuantity;
+      this.showConfirmSnackbar = true;
       this.selectedProducts.push(this.selectedProduct);
       this.productQuantityDialog = false;
     }
