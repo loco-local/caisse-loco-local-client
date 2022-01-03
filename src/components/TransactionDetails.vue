@@ -24,7 +24,13 @@
               {{ item.name }}
             </td>
             <td class="text-left pl-6">
-              {{ item.price | currency }}
+              {{ item.amountWithoutTax | currency }}
+            </td>
+            <td class="text-left pl-6">
+              {{ item.tpsAmount | currency }}
+            </td>
+            <td class="text-left pl-6">
+              {{ item.tvqAmount | currency }}
             </td>
             <td class="text-left pl-6">
               {{ item.quantity }}
@@ -32,6 +38,8 @@
             <td class="text-left">{{ (item.price * item.quantity) | currency }}</td>
           </tr>
           <tr>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -74,14 +82,6 @@
       <v-icon>delete</v-icon>
       Supprimer la transaction
     </v-btn>
-    <v-card-actions class="pb-6">
-      <v-btn color="primary" class="ml-2 left" @click="completeTransaction()"
-             :disabled="transactionItems.length === 0"
-             v-if="!areTransactionsCommited"
-      >
-        Compléter la transaction
-      </v-btn>
-    </v-card-actions>
     <v-dialog
         v-model="showTransactionMsgSuccess"
         persistent
@@ -138,7 +138,15 @@ export default {
         },
         {
           text: 'Prix unitaire',
-          value: 'price'
+          value: 'amountWithoutTax'
+        },
+        {
+          text: 'TPS',
+          value: 'tpsAmount'
+        },
+        {
+          text: 'TVQ',
+          value: 'tvqAmount'
         },
         {
           text: 'Quantity',
@@ -166,6 +174,11 @@ export default {
     transactionItems: function () {
       return this.products.filter(function (item) {
         return item.quantity > 0
+      }).map((item) => {
+        item.amountWithoutTax = this.amountWithoutTax(item);
+        item.tvqAmount = this.TVQFromAmountWithTax(item);
+        item.tpsAmount = this.TPSFromAmountWithTax(item);
+        return item;
       })
     },
     transactionItemsTotal: function () {
@@ -193,6 +206,15 @@ export default {
     clearInterval(this.timeoutInterval)
   },
   methods: {
+    TVQFromAmountWithTax(product) {
+      return product.isTaxable ? product.amountWithoutTax * 0.09975 : 0;
+    },
+    TPSFromAmountWithTax(product) {
+      return product.isTaxable ? product.amountWithoutTax * 0.05 : 0;
+    },
+    amountWithoutTax(product) {
+      return product.isTaxable ? product.price / 1.14975 : product.price;
+    },
     removeTransaction: async function () {
       this.removeLoading = true;
       await TransactionService.removeTransaction(this.transactionId);

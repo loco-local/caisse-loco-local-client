@@ -5,9 +5,13 @@
         Annuler
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn :dark="transactionItemsTotal > 0" color="primary" :disabled="transactionItemsTotal <= 0"
-             @click="showCompleteTransactionModal = true; showConfirmSnackbar= false;">
-        Compléter la transaction
+      <v-btn :dark="transactionItemsTotal > 0"
+             color="primary"
+             :disabled="transactionItemsTotal <= 0"
+             @click="showPaymentModal = true; showConfirmSnackbar= false;"
+      >
+        {{ transactionItemsTotal | currency }}
+        Payer
       </v-btn>
     </v-toolbar>
     <v-card flat class="" color="transparent">
@@ -45,15 +49,24 @@
           </v-col>
           <v-col cols="12" md="4" class="text-center" v-for="product in category.products"
                  :key="product.id">
-            <v-card height="150" @click="selectProduct(product)" class="vh-center">
+            <v-card height="150" @click="selectProduct(product)" class="vh-center"
+                    :dark="isProductInTransaction(product)" :color="cardColorFromProduct(product)">
+              <v-chip
+                  color="transparent"
+                  v-if="product.quantity"
+                  style="margin-bottom: -16px;"
+                  class="font-weight-bold"
+              >
+                Quantité: {{ product.quantity }}
+              </v-chip>
               <v-card-title class="vh-center">
                 {{ product.name }}
               </v-card-title>
               <v-card-subtitle v-if="product.price" class="mt-1 text-h6">
-                {{product.price | currency}}
+                {{ product.price | currency }}
                 <small v-if="product.isPriceInKg">/kg</small>
               </v-card-subtitle>
-              <v-card-text>
+              <v-card-text v-if="product.description">
                 {{ product.description }}
               </v-card-text>
             </v-card>
@@ -66,22 +79,31 @@
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
         </v-card-title>
-        <v-card-subtitle class="text-center">
-          {{ selectedProduct.category.name }}
-        </v-card-subtitle>
         <v-card-text>
           <v-form ref="quantityForm">
             <v-row class="vh-center">
               <v-col cols="4">
                 <v-text-field
+                    clearable
                     label="Poids"
                     ref="quantityInput"
-                    v-model="productQuantity"
+                    v-model="selectedProduct.quantity"
                     suffix="kg"
-                    :rules="[Rules.required]"
-                    required
                     type="number"
-                    size="5"
+                    v-if="selectedProduct.isPriceInKg"
+                    @keydown="quantityKeydown"
+                    @click:clear="confirmQuantity(0)"
+                ></v-text-field>
+                <v-text-field
+                    clearable
+                    label="Quantité"
+                    ref="quantityInput"
+                    v-model="selectedProduct.quantity"
+                    type="number"
+                    size="2"
+                    v-if="!selectedProduct.isPriceInKg"
+                    @keydown="quantityKeydown"
+                    @click:clear="confirmQuantity(0)"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -92,7 +114,38 @@
             Annuler
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="confirmQuantity">
+          <v-btn color="primary" @click="confirmQuantity()">
+            Confirmer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600">
+      <v-card>
+        <v-card-title class="vh-center">
+          {{ selectedProduct.name }}
+        </v-card-title>
+        <v-card-text>
+          <v-row class="vh-center">
+            <v-col cols="4">
+              <v-text-field
+                  clearable
+                  label="Montant récolté"
+                  ref="priceInput"
+                  v-model="selectedProduct.price"
+                  type="number"
+                  size="2"
+                  @keydown="quantityKeydown"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="activityDialog=false">
+            Annuler
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="confirmActivity()">
             Confirmer
           </v-btn>
         </v-card-actions>
@@ -110,8 +163,8 @@
         Total: {{ transactionItemsTotal | currency }}
       </span>
       <v-btn dark color="primary" class="ml-8" :disabled="selectedProducts.length === 0"
-             @click="showCompleteTransactionModal = true; showConfirmSnackbar= false;">
-        Compléter la transaction
+             @click="showPaymentModal = true; showConfirmSnackbar= false;">
+        Payer
       </v-btn>
       <template v-slot:action="{ attrs }">
         <v-btn icon dark color="secondary" class="ml-8" @click.native="showConfirmSnackbar = false" v-bind="attrs">
@@ -119,16 +172,53 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-dialog v-model="showCompleteTransactionModal" eager>
-      <v-card>
-        <v-card-text class="pt-8">
-          <TransactionDetails :products="selectedProducts" @onTotal="setTransactionItemsTotal"
+    <v-dialog v-model="showPaymentModal" width="900">
+      <v-card flat>
+        <v-card-text>
+          <TransactionDetails :products="selectedProducts" :key="detailsKey"
                               :ardoiseUser="null"/>
+        </v-card-text>
+        <v-card-title>
+          Mode de paiement
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="4" class="text-center">
+              <v-card>
+                <v-card-title>
+                  <v-icon>attach_money</v-icon>
+                </v-card-title>
+                <v-card-title>
+                  Comptant
+                </v-card-title>
+              </v-card>
+            </v-col>
+            <v-col cols="12" md="4" class="text-center">
+              <v-card>
+                <v-card-title>
+                  <v-icon>attach_money</v-icon>
+                </v-card-title>
+                <v-card-title>
+                  Comptant
+                </v-card-title>
+              </v-card>
+            </v-col>
+            <v-col cols="12" md="4" class="text-center">
+              <v-card>
+                <v-card-title>
+                  <v-icon>attach_money</v-icon>
+                </v-card-title>
+                <v-card-title>
+                  Comptant
+                </v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="secondary" text
-                 @click.native="showCompleteTransactionModal = false; showConfirmSnackbar = true">
+                 @click.native="showPaymentModal = false; showConfirmSnackbar = true">
             Annuler
           </v-btn>
         </v-card-actions>
@@ -141,11 +231,12 @@
 import ProductService from "@/service/ProductService";
 import Rules from '@/Rules'
 
+const ENTER_KEY_CODE = 13;
 export default {
   name: "Transaction",
   components: {
     Page: () => import('@/components/Page'),
-    TransactionDetails: () => import('@/components/TransactionDetails'),
+    TransactionDetails: () => import('@/components/TransactionDetails')
   },
   data: function () {
     return {
@@ -155,38 +246,87 @@ export default {
       selectedProduct: null,
       selectedProducts: [],
       productQuantityDialog: false,
-      productQuantity: null,
-      transactionItemsTotal: 0,
       showConfirmSnackbar: false,
-      showCompleteTransactionModal: false
+      showPaymentModal: false,
+      detailsKey: Math.random(),
+      transactionItemsTotal: 0,
+      activityDialog: false
     }
   },
   methods: {
-    setTransactionItemsTotal: function (value) {
-      this.transactionItemsTotal = value
+    isProductInTransaction: function (product) {
+      return product.quantity !== undefined && product.quantity > 0;
+    },
+    cardColorFromProduct: function (product) {
+      if (this.isProductInTransaction(product)) {
+        return "primary";
+      }
+      return "transparent";
+    },
+    updateTransactionItemsTotal: function () {
+      this.transactionItemsTotal = this.selectedProducts.reduce((sum, item) => {
+            return sum + item.quantity * item.price;
+          }, 0
+      );
+      if (isNaN(this.transactionItemsTotal)) {
+        this.transactionItemsTotal = 0;
+      }
+      this.showConfirmSnackbar = this.transactionItemsTotal > 0;
+    },
+    quantityKeydown: function (event) {
+      if (event.keyCode === ENTER_KEY_CODE) {
+        this.confirmQuantity();
+      }
     },
     back: function () {
       window.history.back()
     },
     selectProduct: async function (product) {
       this.selectedProduct = product;
-      this.productQuantity = null;
+      if (product.isActivity) {
+        return this.selectActivityProduct();
+      }
       this.productQuantityDialog = true;
       await this.$nextTick();
       setTimeout(() => {
         this.$refs.quantityInput.$el.querySelector("input").focus()
       })
     },
-    confirmQuantity: function () {
-      if (!this.$refs.quantityForm.validate()) {
-        return;
-      }
-      this.selectedProduct.quantity = this.productQuantity;
-      this.showConfirmSnackbar = true;
-      this.selectedProducts.push(this.selectedProduct);
+    selectActivityProduct: async function () {
+      this.activityDialog = true;
+      await this.$nextTick();
+      setTimeout(() => {
+        this.$refs.priceInput.$el.querySelector("input").focus()
+      })
+    },
+    confirmActivity: function (price) {
+      this.selectedProduct.quantity = 1;
+      this._confirmPriceOrQuantity(true, price);
+      this.activityDialog = false;
+    },
+    confirmQuantity: function (quantity) {
+      this._confirmPriceOrQuantity(false, quantity);
       this.productQuantityDialog = false;
+    },
+    _confirmPriceOrQuantity: function (isPrice, paramValue) {
+      const propertyName = isPrice ? "price" : "quantity";
+      if (paramValue !== undefined) {
+        this.selectedProduct[propertyName] = paramValue;
+      }
+      const productInTransaction = this.selectedProducts.filter((product) => {
+        return product.id === this.selectedProduct.id;
+      });
+      this.selectedProduct[propertyName] = parseFloat(this.selectedProduct[propertyName]);
+      if (productInTransaction.length) {
+        productInTransaction[propertyName] = parseFloat(this.selectedProduct[propertyName]);
+        this.detailsKey = Math.random();
+      } else {
+        this.selectedProducts.push(this.selectedProduct);
+      }
+      this.updateTransactionItemsTotal();
     }
-  },
+  }
+  ,
   mounted: async function () {
     this.isLoading = true;
     let response = await ProductService.listAvailable();
@@ -207,6 +347,7 @@ export default {
     this.categories = Object.values(this.categories).sort(function (a, b) {
       return a.priority - b.priority;
     });
+    this.updateTransactionItemsTotal();
     this.isLoading = false;
   }
 }
