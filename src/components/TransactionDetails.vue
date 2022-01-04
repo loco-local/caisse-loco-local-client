@@ -149,7 +149,7 @@ export default {
           value: 'tvqAmount'
         },
         {
-          text: 'Quantity',
+          text: 'Quantité',
           value: 'quantity'
         },
         {

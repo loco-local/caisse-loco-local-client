@@ -53,16 +53,24 @@
                     :dark="isProductInTransaction(product)" :color="cardColorFromProduct(product)">
               <v-chip
                   color="transparent"
-                  v-if="product.quantity"
+                  v-if="product.quantity && !product.isActivity"
                   style="margin-bottom: -16px;"
                   class="font-weight-bold"
               >
                 Quantité: {{ product.quantity }}
               </v-chip>
+              <v-chip
+                  color="transparent"
+                  v-if="product.isActivity && product.info && product.info.name"
+                  style="margin-bottom: -16px;"
+                  class="font-weight-bold"
+              >
+                {{ product.info.name }}
+              </v-chip>
               <v-card-title class="vh-center">
                 {{ product.name }}
               </v-card-title>
-              <v-card-subtitle v-if="product.price" class="mt-1 text-h6">
+              <v-card-subtitle v-if="product.price && !product.isActivity" class="mt-1 text-h6">
                 {{ product.price | currency }}
                 <small v-if="product.isPriceInKg">/kg</small>
               </v-card-subtitle>
@@ -87,7 +95,7 @@
                     clearable
                     label="Poids"
                     ref="quantityInput"
-                    v-model="selectedProduct.quantity"
+                    v-model="quantityOfSelectedProduct"
                     suffix="kg"
                     type="number"
                     v-if="selectedProduct.isPriceInKg"
@@ -98,7 +106,7 @@
                     clearable
                     label="Quantité"
                     ref="quantityInput"
-                    v-model="selectedProduct.quantity"
+                    v-model="quantityOfSelectedProduct"
                     type="number"
                     size="2"
                     v-if="!selectedProduct.isPriceInKg"
@@ -125,21 +133,54 @@
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
         </v-card-title>
-        <v-card-text>
-          <v-row class="vh-center">
-            <v-col cols="4">
-              <v-text-field
-                  clearable
-                  label="Montant récolté"
-                  ref="priceInput"
-                  v-model="selectedProduct.price"
-                  type="number"
-                  size="2"
-                  @keydown="quantityKeydown"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-        </v-card-text>
+        <v-form ref="activityForm">
+          <v-card-text>
+            <v-row class="vh-center">
+              <v-col cols="8">
+                <v-text-field
+                    clearable
+                    label="Montant récolté"
+                    ref="priceInput"
+                    v-model="priceOfSelectedProduct"
+                    type="number"
+                    size="2"
+                    @keydown="activityKeydown"
+                    :rules="[Rules.required]"
+                    required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-text>
+            <v-row class="vh-center">
+              <v-col cols="8">
+                <v-text-field
+                    clearable
+                    label="Nom de l'activité"
+                    v-model="nameOfSelectedProduct"
+                    @keydown="activityKeydown"
+                    :rules="[Rules.required]"
+                    required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-text>
+            <v-row class="vh-center">
+              <v-col cols="8">
+                <v-text-field
+                    clearable
+                    label="Nombre de participants ?"
+                    v-model="nbParticipantsOfSelectedProduct"
+                    type="number"
+                    @keydown="activityKeydown"
+                    :rules="[Rules.required]"
+                    required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-form>
         <v-card-actions>
           <v-btn @click="activityDialog=false">
             Annuler
@@ -250,12 +291,17 @@ export default {
       showPaymentModal: false,
       detailsKey: Math.random(),
       transactionItemsTotal: 0,
-      activityDialog: false
+      activityDialog: false,
+      priceOfSelectedProduct: null,
+      quantityOfSelectedProduct: null,
+      nameOfSelectedProduct: null,
+      nbParticipantsOfSelectedProduct: null,
     }
   },
   methods: {
     isProductInTransaction: function (product) {
-      return product.quantity !== undefined && product.quantity > 0;
+      return (product.quantity !== undefined && product.quantity > 0) ||
+          product.isActivity && product.info && product.info.name !== undefined;
     },
     cardColorFromProduct: function (product) {
       if (this.isProductInTransaction(product)) {
@@ -269,9 +315,15 @@ export default {
           }, 0
       );
       if (isNaN(this.transactionItemsTotal)) {
+        console.log(this.transactionItemsTotal);
         this.transactionItemsTotal = 0;
       }
       this.showConfirmSnackbar = this.transactionItemsTotal > 0;
+    },
+    activityKeydown: function (event) {
+      if (event.keyCode === ENTER_KEY_CODE) {
+        this.confirmActivity();
+      }
     },
     quantityKeydown: function (event) {
       if (event.keyCode === ENTER_KEY_CODE) {
@@ -283,6 +335,12 @@ export default {
     },
     selectProduct: async function (product) {
       this.selectedProduct = product;
+      this.priceOfSelectedProduct = product.price;
+      this.quantityOfSelectedProduct = product.quantity;
+      if (product.info) {
+        this.nameOfSelectedProduct = product.info.name;
+        this.nbParticipantsOfSelectedProduct = product.info.nbParticipants;
+      }
       if (product.isActivity) {
         return this.selectActivityProduct();
       }
@@ -300,6 +358,13 @@ export default {
       })
     },
     confirmActivity: function (price) {
+      if (!this.$refs.activityForm.validate()) {
+        return;
+      }
+      this.selectedProduct.info = {
+        name: this.nameOfSelectedProduct,
+        nbParticipants: this.nbParticipantsOfSelectedProduct
+      };
       this.selectedProduct.quantity = 1;
       this._confirmPriceOrQuantity(true, price);
       this.activityDialog = false;
@@ -310,13 +375,15 @@ export default {
     },
     _confirmPriceOrQuantity: function (isPrice, paramValue) {
       const propertyName = isPrice ? "price" : "quantity";
-      if (paramValue !== undefined) {
-        this.selectedProduct[propertyName] = paramValue;
+      const globalValue = isPrice ? this.priceOfSelectedProduct : this.quantityOfSelectedProduct;
+      let value = parseFloat(paramValue === undefined ? globalValue : paramValue);
+      if (isNaN(value)) {
+        value = null;
       }
+      this.selectedProduct[propertyName] = value;
       const productInTransaction = this.selectedProducts.filter((product) => {
         return product.id === this.selectedProduct.id;
       });
-      this.selectedProduct[propertyName] = parseFloat(this.selectedProduct[propertyName]);
       if (productInTransaction.length) {
         productInTransaction[propertyName] = parseFloat(this.selectedProduct[propertyName]);
         this.detailsKey = Math.random();
