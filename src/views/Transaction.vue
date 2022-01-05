@@ -219,44 +219,34 @@
           <TransactionDetails :products="selectedProducts" :key="detailsKey"
                               :ardoiseUser="null"/>
         </v-card-text>
-        <v-card-title>
-          Mode de paiement
-        </v-card-title>
-        <v-card-text>
-          <v-row>
-            <v-col cols="12" md="4" class="text-center">
-              <v-card>
-                <v-card-title>
-                  <v-icon>attach_money</v-icon>
-                </v-card-title>
-                <v-card-title>
-                  Comptant
-                </v-card-title>
-              </v-card>
-            </v-col>
-            <v-col cols="12" md="4" class="text-center">
-              <v-card>
-                <v-card-title>
-                  <v-icon>attach_money</v-icon>
-                </v-card-title>
-                <v-card-title>
-                  Comptant
-                </v-card-title>
-              </v-card>
-            </v-col>
-            <v-col cols="12" md="4" class="text-center">
-              <v-card>
-                <v-card-title>
-                  <v-icon>attach_money</v-icon>
-                </v-card-title>
-                <v-card-title>
-                  Comptant
-                </v-card-title>
-              </v-card>
-            </v-col>
-          </v-row>
+        <!--        <v-card-title class="vh-center">-->
+        <!--          Mode de paiement-->
+        <!--        </v-card-title>-->
+        <v-card-text class="vh-center">
+          <v-radio-group v-model="paymentMethod">
+            <v-radio
+                label="Comptant"
+                value="cash"
+                class="pt-2 pb-2"
+            ></v-radio>
+            <v-radio
+                label="Virement interact à horizonsgaspesiens@gmail.com"
+                value="interact"
+                class="pt-2 pb-2"
+            ></v-radio>
+            <v-radio
+                label="Compte prépayé"
+                value="prepaid"
+                class="pt-2 pb-2"
+            ></v-radio>
+          </v-radio-group>
         </v-card-text>
         <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary"
+                 @click.native="confirmTransaction" large>
+            Confirmer
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn color="secondary" text
                  @click.native="showPaymentModal = false; showConfirmSnackbar = true">
@@ -265,12 +255,55 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="completedDialog"
+              persistent
+              max-width="600">
+      <v-card>
+        <v-card-title class="text-h6 text-center mb-4 vh-center">
+          <span v-if="paymentMethod === 'prepaid'">
+            Votre solde est maintenant de {{ balance | currency }}
+          </span>
+          <div v-if="!isPrepaidUser" class="text-center">
+            <div>
+              Veuillez payer le montant de <strong>{{ transactionItemsTotal | currency }}</strong>
+            </div>
+            <div class="">
+              Merci !
+            </div>
+          </div>
+        </v-card-title>
+        <v-card-subtitle class="vh-center body-1">
+          <div v-if="paymentMethod === 'cash'">
+            Déposez l'argent comptant dans la caisse sous la balance
+          </div>
+          <div v-if="paymentMethod === 'interact'">
+            Virement interact à horizonsgaspesiens@gmail.com
+            <div>
+              Utilisez <strong class="font-italic">bonaventure</strong> comme réponse à la question
+            </div>
+          </div>
+        </v-card-subtitle>
+        <v-card-text>
+          <v-layout row wrap flex align-center justify-center>
+            <v-flex md6>
+              Vous serez redirigé dans {{ disconnectTimeout }} secondes
+            </v-flex>
+            <v-flex md6 class="text-right">
+              <v-btn color="primary" class="pull-right" @click="redirectToLanding()">
+                Terminer
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </Page>
 </template>
 
 <script>
 import ProductService from "@/service/ProductService";
 import Rules from '@/Rules'
+import TransactionService from "@/service/TransactionService";
 
 const ENTER_KEY_CODE = 13;
 export default {
@@ -296,9 +329,34 @@ export default {
       quantityOfSelectedProduct: null,
       nameOfSelectedProduct: null,
       nbParticipantsOfSelectedProduct: null,
+      paymentMethod: null,
+      completedDialog: false,
+      isPrepaidUser: false,
+      timeoutInterval: null,
+      disconnectTimeout: null,
     }
   },
   methods: {
+    redirectToLanding: function () {
+      clearInterval(this.timeoutInterval)
+      // this.$store.dispatch('setArdoiseUser', null)
+      this.$router.push({
+        name: 'Landing'
+      })
+    },
+    confirmTransaction: async function () {
+      await TransactionService.addForAnonymous(this.selectedProducts);
+      this.disconnectTimeout = 60;
+      this.timeoutInterval = setInterval(() => {
+        this.disconnectTimeout--;
+        if (this.disconnectTimeout <= 0) {
+          this.redirectToLanding()
+        }
+      },1000);
+      this.showPaymentModal = false;
+      this.showConfirmSnackbar = true;
+      this.completedDialog = true;
+    },
     isProductInTransaction: function (product) {
       return (product.quantity !== undefined && product.quantity > 0) ||
           product.isActivity && product.info && product.info.name !== undefined;
@@ -395,6 +453,7 @@ export default {
   }
   ,
   mounted: async function () {
+    clearInterval(this.timeoutInterval)
     this.isLoading = true;
     let response = await ProductService.listAvailable();
     const products = response.data;
