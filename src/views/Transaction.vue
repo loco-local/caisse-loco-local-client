@@ -222,8 +222,8 @@
         <!--        <v-card-title class="vh-center">-->
         <!--          Mode de paiement-->
         <!--        </v-card-title>-->
-        <v-card-text class="vh-center">
-          <v-radio-group v-model="paymentMethod">
+        <v-card-text class="vh-center pb-0">
+          <v-radio-group v-model="paymentMethod" @change="handleChangePaymentMethod">
             <v-radio
                 label="Comptant"
                 value="cash"
@@ -237,14 +237,49 @@
             <v-radio
                 label="Compte prépayé"
                 value="prepaid"
-                class="pt-2 pb-2"
+                class="pt-2"
             ></v-radio>
           </v-radio-group>
+        </v-card-text>
+        <v-card-text v-if="paymentMethod === 'prepaid'" class="vh-center">
+          <v-progress-circular
+              :size="50"
+              color="primary"
+              indeterminate
+              v-if="isLoadingUsers"
+          ></v-progress-circular>
+          <v-row class="vh-center">
+            <v-col cols="6">
+              <v-select
+                  v-if="!isLoadingUsers"
+                  :items="users"
+                  label="Compte prépayé"
+                  item-value="id"
+                  item-text="text"
+                  return-object
+                  v-model="prepaidUser"
+              >
+                <template v-slot:item="{ item }">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ item.firstname }}
+                      {{ item.lastname }}
+                      <span class="ml-3 mr-3">|</span>
+                      <strong>{{ item.balance | currency }}</strong>
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </template>
+              </v-select>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary"
-                 @click.native="confirmTransaction" large>
+                 @click.native="confirmTransaction" large
+                 :loading="isWaitingForTransaction"
+                 :disabled="isWaitingForTransaction || isLoadingUsers"
+          >
             Confirmer
           </v-btn>
           <v-spacer></v-spacer>
@@ -260,14 +295,17 @@
               max-width="600">
       <v-card>
         <v-card-title class="text-h6 text-center mb-4 vh-center">
-          <span v-if="paymentMethod === 'prepaid'">
-            Votre solde est maintenant de {{ balance | currency }}
-          </span>
-          <div v-if="!isPrepaidUser" class="text-center">
+          <div v-if="paymentMethod === 'prepaid' && prepaidUser !== null">
+            <div class="text-center">
+              Merci !
+            </div>
+            Votre solde est maintenant de {{ prepaidUser.balance | currency }}
+          </div>
+          <div v-else class="text-center">
             <div>
               Veuillez payer le montant de <strong>{{ transactionItemsTotal | currency }}</strong>
             </div>
-            <div class="">
+            <div class="text-center">
               Merci !
             </div>
           </div>
@@ -304,6 +342,7 @@
 import ProductService from "@/service/ProductService";
 import Rules from '@/Rules'
 import TransactionService from "@/service/TransactionService";
+import UserService from "@/service/UserService";
 
 const ENTER_KEY_CODE = 13;
 export default {
@@ -331,12 +370,28 @@ export default {
       nbParticipantsOfSelectedProduct: null,
       paymentMethod: null,
       completedDialog: false,
-      isPrepaidUser: false,
+      prepaidUser: null,
       timeoutInterval: null,
       disconnectTimeout: null,
+      isLoadingUsers: false,
+      isWaitingForTransaction: false,
+      users: []
     }
   },
   methods: {
+    handleChangePaymentMethod: async function () {
+      if (this.paymentMethod === 'prepaid') {
+        this.isLoadingUsers = true;
+        const response = await UserService.list();
+        this.users = response.data.map((user) => {
+          user.text = user.firstname + " " + user.lastname + " | " + this.$options.filters.currency(user.balance);
+          return user;
+        })
+        this.isLoadingUsers = false;
+      } else {
+        this.prepaidUser = null;
+      }
+    },
     redirectToLanding: function () {
       clearInterval(this.timeoutInterval)
       // this.$store.dispatch('setArdoiseUser', null)
@@ -345,6 +400,7 @@ export default {
       })
     },
     confirmTransaction: async function () {
+      this.isWaitingForTransaction = true;
       await TransactionService.addForAnonymous(this.selectedProducts);
       this.disconnectTimeout = 60;
       this.timeoutInterval = setInterval(() => {
@@ -352,10 +408,11 @@ export default {
         if (this.disconnectTimeout <= 0) {
           this.redirectToLanding()
         }
-      },1000);
+      }, 1000);
       this.showPaymentModal = false;
-      this.showConfirmSnackbar = true;
+      this.showConfirmSnackbar = false;
       this.completedDialog = true;
+      this.isWaitingForTransaction = false;
     },
     isProductInTransaction: function (product) {
       return (product.quantity !== undefined && product.quantity > 0) ||
