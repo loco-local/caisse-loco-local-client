@@ -13,9 +13,9 @@ export default {
     getDetails: function (user, transaction) {
         return Service.api().get(user.id + '/transaction/' + transaction.id)
     },
-    addForUser: function (items, user) {
+    addForUserId: function (items, userId) {
         return Service.api().post(
-            user.id + '/transaction',
+            userId + '/transaction',
             items
         )
     },

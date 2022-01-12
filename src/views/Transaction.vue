@@ -278,7 +278,7 @@
           <v-btn color="primary"
                  @click.native="confirmTransaction" large
                  :loading="isWaitingForTransaction"
-                 :disabled="isWaitingForTransaction || isLoadingUsers"
+                 :disabled="isWaitingForTransaction || isLoadingUsers || paymentMethod === null || (paymentMethod === 'prepaid' && prepaidUser === null)"
           >
             Confirmer
           </v-btn>
@@ -401,7 +401,15 @@ export default {
     },
     confirmTransaction: async function () {
       this.isWaitingForTransaction = true;
-      await TransactionService.addForAnonymous(this.selectedProducts);
+      if (this.paymentMethod === 'prepaid') {
+        this.prepaidUser.balance -= this.transactionItemsTotal;
+        await TransactionService.addForUserId(
+            this.selectedProducts,
+            this.prepaidUser.id
+        );
+      } else {
+        await TransactionService.addForAnonymous(this.selectedProducts);
+      }
       this.disconnectTimeout = 60;
       this.timeoutInterval = setInterval(() => {
         this.disconnectTimeout--;
