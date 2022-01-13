@@ -6,7 +6,7 @@
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn :dark="transactionItemsTotal > 0"
-             color="primary"
+             color="secondary"
              :disabled="transactionItemsTotal <= 0"
              @click="showPaymentModal = true; showConfirmSnackbar= false;"
       >
@@ -203,12 +203,12 @@
       <span class="font-weight-bold body-1">
         Total: {{ transactionItemsTotal | currency }}
       </span>
-      <v-btn dark color="primary" class="ml-8" :disabled="selectedProducts.length === 0"
+      <v-btn color="white" class="ml-8 black--text" :disabled="selectedProducts.length === 0"
              @click="showPaymentModal = true; showConfirmSnackbar= false;">
         Payer
       </v-btn>
       <template v-slot:action="{ attrs }">
-        <v-btn icon dark color="secondary" class="ml-8" @click.native="showConfirmSnackbar = false" v-bind="attrs">
+        <v-btn icon dark color="" class="ml-8" @click.native="showConfirmSnackbar = false" v-bind="attrs">
           <v-icon color="white">close</v-icon>
         </v-btn>
       </template>
@@ -275,7 +275,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary"
+          <v-btn color="secondary"
                  @click.native="confirmTransaction" large
                  :loading="isWaitingForTransaction"
                  :disabled="isWaitingForTransaction || isLoadingUsers || paymentMethod === null || (paymentMethod === 'prepaid' && prepaidUser === null)"
@@ -283,7 +283,7 @@
             Confirmer
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="secondary" text
+          <v-btn color="" text
                  @click.native="showPaymentModal = false; showConfirmSnackbar = true">
             Annuler
           </v-btn>
@@ -428,7 +428,7 @@ export default {
     },
     cardColorFromProduct: function (product) {
       if (this.isProductInTransaction(product)) {
-        return "primary";
+        return "secondary";
       }
       return "transparent";
     },

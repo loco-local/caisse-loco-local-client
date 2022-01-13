@@ -2,17 +2,18 @@
   <v-app>
     <v-app-bar
         app
-        color="primary"
+        color="white"
         dark
     >
       <div class="d-flex align-center">
+        <v-app-bar-nav-icon @click.stop="adminMenu = !adminMenu" v-if="isAdminPage"></v-app-bar-nav-icon>
         <v-img
-            alt="Vuetify Logo"
+            alt="Logo Loco Local"
             class="shrink mr-2"
             contain
-            src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+            :src="require('@/assets/logo-loco-horizontal.png')"
             transition="scale-transition"
-            width="40"
+            width="140"
         />
 
         <v-img
@@ -36,19 +37,54 @@
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
+    <v-navigation-drawer
+        v-if="isAdminPage"
+        v-model="adminMenu"
+        light
+        app
+        fixed
+    >
+      <v-list>
+        <v-list-item
+            value="true"
+        >
+          <v-list-item-action>
+            <v-icon></v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              asdf
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <router-view/>
   </v-app>
 </template>
 
 <script>
+import BreathingColors from '@/BreathingColors'
+
 export default {
   name: 'App',
 
   components: {},
 
-  data: () => ({
-    //
-  }),
+  data: () => {
+    BreathingColors.setup();
+    return {
+      adminMenu: true
+    }
+  },
+  computed: {
+    isAdminPage: function () {
+      return [
+        "Administration",
+        "ComptesPrépayés"
+      ].indexOf(this.$route.name) !== -1;
+    }
+  }
 };
 </script>
 

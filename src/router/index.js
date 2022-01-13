@@ -13,6 +13,16 @@ const routes = [
         path: '/transaction',
         name: 'Transaction',
         component: () => import('../views/Transaction.vue')
+    },
+    {
+        path: '/fafa',
+        name: 'Administration',
+        component: () => import('../views/Administration.vue')
+    },
+    {
+        path: '/comptes',
+        name: 'ComptesPrépayés',
+        component: () => import('../views/PrepaidAccounts.vue')
     }
 ]
 
