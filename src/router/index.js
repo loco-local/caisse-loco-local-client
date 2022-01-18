@@ -23,6 +23,11 @@ const routes = [
         path: '/comptes',
         name: 'ComptesPrépayés',
         component: () => import('../views/PrepaidAccounts.vue')
+    },
+    {
+        path: '/compte/:accountId',
+        name: 'AccountEdit',
+        component: () => import('../views/PrepaidAccount.vue')
     }
 ]
 

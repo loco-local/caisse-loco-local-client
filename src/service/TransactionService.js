@@ -1,8 +1,8 @@
 import Service from '@/service/Service'
 
 export default {
-    list: function (user) {
-        return Service.api().get(user.id + '/transaction')
+    listForUserId: function (userId) {
+        return Service.api().get(userId + '/transaction')
     },
     listAllDetails: function (yearFilter) {
         return Service.api().get('/transactions/details/' + yearFilter)
