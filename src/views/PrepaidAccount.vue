@@ -10,7 +10,7 @@
         <v-form name="accountForm" ref="accountForm">
           <v-text-field v-model="account.firstname" label="Prénom"></v-text-field>
           <v-text-field v-model="account.lastname" label="Nom"></v-text-field>
-          <v-text-field v-model="account.phone" label="Téléphone" type="number" prepend-icon="phone"></v-text-field>
+          <v-text-field v-model="account.phone" label="Téléphone" prepend-icon="phone"></v-text-field>
           <v-text-field v-model="account.email" label="Courriel" prepend-icon="mail"></v-text-field>
           <v-text-field v-model="account.address" label="Adresse" prepend-icon="home"></v-text-field>
         </v-form>
@@ -29,10 +29,14 @@
         Ajouter fonds dans le compte
       </v-card-title>
       <v-card-text>
-        <v-text-field label="Montant d'ajout dans le compte"></v-text-field>
+        <v-text-field label="Montant d'ajout dans le compte"
+                      v-model="prepaidAmount"
+                      type="number"
+                      min="0"
+        ></v-text-field>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary">
+        <v-btn color="primary" @click="addFund">
           Ajouter
         </v-btn>
       </v-card-actions>
@@ -107,7 +111,8 @@ export default {
   data: function () {
     return {
       account: {},
-      transactions: []
+      transactions: [],
+      prepaidAmount: null
     };
   },
   mounted: async function () {
@@ -117,15 +122,7 @@ export default {
     }
     let response = await UserService.getById(this.account.id);
     this.account = response.data;
-    response = await TransactionService.listForUserId(this.account.id);
-    this.transactions = response.data.map((transaction) => {
-      if (Math.sign(transaction.totalPrice) === 1) {
-        transaction.withdrawal = transaction.totalPrice
-      } else {
-        transaction.deposit = transaction.totalPrice * -1
-      }
-      return transaction;
-    });
+    await this.buildTransactions();
   },
   methods: {
     create: function () {
@@ -133,6 +130,31 @@ export default {
     },
     modify: function () {
 
+    },
+    addFund: async function () {
+      if (!this.prepaidAmount || this.prepaidAmount <= 0) {
+        return
+      }
+      const amount = this.prepaidAmount;
+      this.prepaidAmount = null
+      await TransactionService.addFundToAccount(
+          amount,
+          this.account.id
+      );
+      await this.buildTransactions();
+    },
+    buildTransactions: async function () {
+      let response = await TransactionService.listForUserId(this.account.id);
+      this.transactions = response.data.map((transaction) => {
+        if (Math.sign(transaction.totalPrice) === 1) {
+          transaction.withdrawal = transaction.totalPrice
+        } else {
+          transaction.deposit = transaction.totalPrice * -1
+        }
+        return transaction;
+      }).sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      })
     }
   },
   computed: {

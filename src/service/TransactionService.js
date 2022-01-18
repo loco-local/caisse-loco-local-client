@@ -25,12 +25,12 @@ export default {
             items
         )
     },
-    addFundToSubscriber: function (amount, subscriber) {
+    addFundToAccount: function (amount, accountId) {
         return Service.api().post(
             '/transaction/fund',
             {
                 amount: amount,
-                subscriberId: subscriber.id
+                accountId: accountId
             }
         )
     }
