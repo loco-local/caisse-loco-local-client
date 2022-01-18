@@ -17,10 +17,10 @@
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="create()" v-if="isCreate">
-          Créer
+          Créer le compte
         </v-btn>
         <v-btn color="primary" @click="modify" v-if="!isCreate">
-          Modifier
+          Modifier le compte
         </v-btn>
       </v-card-actions>
     </v-card>

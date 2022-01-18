@@ -102,7 +102,9 @@ export default {
   },
   methods: {
     addAccount: function () {
-
+      this.$router.push({
+        name: 'AccountCreate'
+      })
     },
     editAccount: function (userId) {
       this.$router.push({
