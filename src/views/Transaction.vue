@@ -1,7 +1,7 @@
 <template>
   <Page>
     <v-toolbar class="mb-0" elevation="0">
-      <v-btn color="primary" @click="back" class="mt-3 mb-3 ml-3">
+      <v-btn @click="back" class="mt-3 mb-3 ml-3">
         Annuler
       </v-btn>
       <v-spacer></v-spacer>

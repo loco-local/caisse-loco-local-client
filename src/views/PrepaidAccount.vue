@@ -30,10 +30,22 @@
       </v-card-title>
       <v-card-text>
         <v-text-field label="Montant d'ajout dans le compte"
-                      v-model="prepaidAmount"
+                      v-model.number="prepaidAmount"
                       type="number"
                       min="0"
         ></v-text-field>
+        <v-radio-group v-model="paymentMethod" label="Mode de paiement">
+          <v-radio
+              label="Comptant"
+              value="cash"
+              class="pt-2 pb-2"
+          ></v-radio>
+          <v-radio
+              label="Virement interact à horizonsgaspesiens@gmail.com"
+              value="interact"
+              class="pt-2 pb-2"
+          ></v-radio>
+        </v-radio-group>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="addFund">
@@ -96,6 +108,10 @@
         </v-simple-table>
       </v-card-text>
     </v-card>
+    <CompletePaymentModal ref="completePaymentModal"
+                          :amount="prepaidAmount"
+                          :paymentMethod="paymentMethod"
+                          :accountBalance="account.balance"></CompletePaymentModal>
   </Page>
 </template>
 
@@ -106,13 +122,15 @@ import TransactionService from "@/service/TransactionService";
 export default {
   name: "PrepaidAccount",
   components: {
-    Page: () => import('@/components/Page')
+    Page: () => import('@/components/Page'),
+    CompletePaymentModal: () => import('@/components/CompletePaymentModal'),
   },
   data: function () {
     return {
       account: {},
       transactions: [],
-      prepaidAmount: null
+      prepaidAmount: null,
+      paymentMethod: null
     };
   },
   mounted: async function () {
@@ -135,13 +153,12 @@ export default {
       if (!this.prepaidAmount || this.prepaidAmount <= 0) {
         return
       }
-      const amount = this.prepaidAmount;
-      this.prepaidAmount = null
+      this.account.balance += this.prepaidAmount;
       await TransactionService.addFundToAccount(
-          amount,
+          this.prepaidAmount,
           this.account.id
       );
-      await this.buildTransactions();
+      this.$refs.completePaymentModal.enter();
     },
     buildTransactions: async function () {
       let response = await TransactionService.listForUserId(this.account.id);

@@ -30,6 +30,9 @@
           </div>
         </div>
       </v-card-subtitle>
+      <v-card-subtitle v-if="paymentMethod !== 'prepaid' && accountBalance !== null" class="vh-center body-1">
+        Votre solde est maintenant de {{ accountBalance | currency }}
+      </v-card-subtitle>
       <v-card-text>
         <v-layout row wrap flex align-center justify-center>
           <v-flex md6>
