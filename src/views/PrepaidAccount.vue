@@ -19,7 +19,7 @@
         <v-btn color="primary" @click="create()" v-if="isCreate">
           Créer le compte
         </v-btn>
-        <v-btn color="primary" @click="modify" v-if="!isCreate">
+        <v-btn color="primary" @click="modify()" v-if="!isCreate">
           Modifier le compte
         </v-btn>
       </v-card-actions>
@@ -48,7 +48,7 @@
         </v-radio-group>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" @click="addFund">
+        <v-btn color="primary" @click="addFund" :disabled="prepaidAmount === null || paymentMethod === null ">
           Ajouter
         </v-btn>
       </v-card-actions>
@@ -112,6 +112,50 @@
                           :amount="prepaidAmount"
                           :paymentMethod="paymentMethod"
                           :accountBalance="account.balance"></CompletePaymentModal>
+    <v-snackbar
+        v-model="createAccountSuccess"
+        bottom
+        color="accent"
+        dark
+        :timeout="7000"
+        class="font-weight-bold body-1"
+    >
+      <v-icon left color="white">account_circle</v-icon>
+      Le compte a été créé.
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="white"
+            text
+            icon
+            v-bind="attrs"
+            @click="createAccountSuccess = false"
+        >
+          <v-icon>close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-snackbar
+        v-model="modifyAccountSuccess"
+        bottom
+        color="accent"
+        dark
+        :timeout="7000"
+        class="font-weight-bold body-1"
+    >
+      <v-icon left color="white">account_circle</v-icon>
+      Le compte a été modifié.
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="white"
+            text
+            icon
+            v-bind="attrs"
+            @click="modifyAccountSuccess = false"
+        >
+          <v-icon>close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </Page>
 </template>
 
@@ -130,24 +174,36 @@ export default {
       account: {},
       transactions: [],
       prepaidAmount: null,
-      paymentMethod: null
+      paymentMethod: null,
+      createAccountSuccess: false,
+      modifyAccountSuccess: false
     };
   },
   mounted: async function () {
-    this.account.id = this.$route.params.accountId
-    if (!this.account.id) {
-      return
-    }
-    let response = await UserService.getById(this.account.id);
-    this.account = response.data;
-    await this.buildTransactions();
+    await this.setup();
   },
   methods: {
-    create: function () {
-
+    setup: async function () {
+      this.account.id = this.$route.params.accountId
+      if (!this.account.id) {
+        return
+      }
+      let response = await UserService.getById(this.account.id);
+      this.account = response.data;
+      await this.buildTransactions();
     },
-    modify: function () {
-
+    create: async function () {
+      const response = await UserService.create(this.account);
+      await this.$router.push({
+        path: '/compte/' + response.data.id
+      })
+      this.createAccountSuccess = true;
+      await this.setup();
+    },
+    modify: async function () {
+      await UserService.update(this.account);
+      this.modifyAccountSuccess = true;
+      await this.setup();
     },
     addFund: async function () {
       if (!this.prepaidAmount || this.prepaidAmount <= 0) {
