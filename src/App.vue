@@ -32,19 +32,37 @@
         app
         fixed
     >
-      <v-list>
-        <v-list-item
-            to="/produits"
-        >
-          <v-list-item-action>
-            <v-icon></v-icon>
-          </v-list-item-action>
+      <v-list class="">
+        <v-list-item>
           <v-list-item-content>
             <v-list-item-title>
-              Produits
+              Transactions
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-divider></v-divider>
+        <v-subheader class="font-weight-bold">
+          Produits
+        </v-subheader>
+        <v-list-item
+            to="/produits"
+        >
+          <v-list-item-content>
+            <v-list-item-title>
+              Liste
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+            to="/produits/catégories"
+        >
+          <v-list-item-content>
+            <v-list-item-title>
+              Catégories
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
       </v-list>
     </v-navigation-drawer>
     <router-view/>
@@ -68,7 +86,8 @@ export default {
   computed: {
     isAdminPage: function () {
       return [
-        "Administration"
+        "Administration",
+        "Products"
       ].indexOf(this.$route.name) !== -1;
     }
   }

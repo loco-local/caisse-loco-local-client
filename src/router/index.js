@@ -33,6 +33,11 @@ const routes = [
         path: '/compte',
         name: 'AccountCreate',
         component: () => import('../views/PrepaidAccount.vue')
+    },
+    {
+        path: '/produits',
+        name: 'Products',
+        component: () => import('../views/Products.vue')
     }
 ]
 
