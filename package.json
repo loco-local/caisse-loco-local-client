@@ -46,7 +46,6 @@
     "rules": {}
   },
   "browserslist": [
-    "Chrome 63",
-    "iOS 9"
+    "defaults"
   ]
 }
