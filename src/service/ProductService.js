@@ -15,5 +15,11 @@ export default {
             '/product/' + product.id,
             product
         );
+    },
+    create: function (product) {
+        return Service.api().post(
+            '/product',
+            product
+        );
     }
 }

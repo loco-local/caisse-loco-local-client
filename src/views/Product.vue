@@ -11,7 +11,7 @@
               label="La quantité saisie par le client est en décimale"
               v-model="product.hasDecimalQuantity"
           />
-          <v-text-field v-model="product.name" label="Nom"></v-text-field>
+          <v-text-field v-model="product.name" label="Nom" :rules="[rules.required]"></v-text-field>
           <v-text-field v-model="product.description" label="Description"></v-text-field>
           <v-checkbox
               label="Est taxable"
@@ -113,18 +113,32 @@ export default {
     }
   },
   mounted: async function () {
-    this.product.id = this.$route.params.productId
-    if (!this.product.id) {
-      return
-    }
-    const response = await ProductService.getById(this.product.id);
-    this.product = response.data;
+    await this.setup();
   },
   methods: {
+    setup: async function () {
+      this.product.id = this.$route.params.productId
+      if (!this.product.id) {
+        return
+      }
+      const response = await ProductService.getById(this.product.id);
+      this.product = response.data;
+    },
     create: async function () {
-
+      if (!this.$refs.productForm.validate()) {
+        return
+      }
+      const response = await ProductService.create(this.product);
+      await this.$router.push({
+        path: '/produit/' + response.data.id
+      })
+      this.createProductSuccess = true;
+      await this.setup();
     },
     modify: async function () {
+      if (!this.$refs.productForm.validate()) {
+        return
+      }
       await ProductService.update(this.product);
       this.modifyProductSuccess = true;
     }
