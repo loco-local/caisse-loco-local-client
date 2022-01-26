@@ -8,20 +8,25 @@
               v-model="product.isAvailable"
           />
           <v-checkbox
-              label="Est taxable"
-              v-model="product.isTaxable"
-          />
-          <v-checkbox
-              label="La quantité est en décimale"
+              label="La quantité saisie par le client est en décimale"
               v-model="product.hasDecimalQuantity"
           />
           <v-text-field v-model="product.name" label="Nom"></v-text-field>
           <v-text-field v-model="product.description" label="Description"></v-text-field>
+          <v-checkbox
+              label="Est taxable"
+              v-model="product.isTaxable"
+          />
+          <v-checkbox
+              label="Le prix est en kilogramme"
+              v-model="product.isPriceInKg"
+          />
           <v-text-field
               label="Prix unitaire"
               v-model="product.price"
               :rules="[rules.required]"
               min="0"
+              hint="Le prix est taxes incluses"
               type="number"
           />
           <v-text-field
@@ -38,13 +43,55 @@
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="create()" v-if="isCreate">
-          Créer le compte
+          Créer le produit
         </v-btn>
         <v-btn color="primary" @click="modify()" v-if="!isCreate">
-          Modifier le compte
+          Modifier le produit
         </v-btn>
       </v-card-actions>
     </v-card>
+    <v-snackbar
+        v-model="modifyProductSuccess"
+        bottom
+        color="accent"
+        dark
+        :timeout="7000"
+        class="font-weight-bold body-1"
+    >
+      Le produit a été modifié.
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="white"
+            text
+            icon
+            v-bind="attrs"
+            @click="modifyProductSuccess = false"
+        >
+          <v-icon>close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-snackbar
+        v-model="createProductSuccess"
+        bottom
+        color="accent"
+        dark
+        :timeout="7000"
+        class="font-weight-bold body-1"
+    >
+      Le produit a été ajouté.
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="white"
+            text
+            icon
+            v-bind="attrs"
+            @click="createProductSuccess = false"
+        >
+          <v-icon>close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </Page>
 </template>
 
@@ -60,7 +107,9 @@ export default {
   data: function () {
     return {
       product: {},
-      rules: Rules
+      rules: Rules,
+      modifyProductSuccess: false,
+      createProductSuccess: false
     }
   },
   mounted: async function () {
@@ -71,7 +120,15 @@ export default {
     const response = await ProductService.getById(this.product.id);
     this.product = response.data;
   },
-  methods: {},
+  methods: {
+    create: async function () {
+
+    },
+    modify: async function () {
+      await ProductService.update(this.product);
+      this.modifyProductSuccess = true;
+    }
+  },
   computed: {
     isCreate: function () {
       return this.product.id === undefined

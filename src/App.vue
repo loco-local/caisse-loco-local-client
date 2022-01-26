@@ -87,7 +87,9 @@ export default {
     isAdminPage: function () {
       return [
         "Administration",
-        "Products"
+        "Products",
+        "ProductEdit",
+        "ProductCreate"
       ].indexOf(this.$route.name) !== -1;
     }
   }

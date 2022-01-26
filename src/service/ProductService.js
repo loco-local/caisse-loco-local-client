@@ -7,7 +7,13 @@ export default {
     listAvailable: function () {
         return Service.api().get('/product/available')
     },
-    getById: function(productId){
+    getById: function (productId) {
         return Service.api().get('/product/' + productId)
+    },
+    update: function (product) {
+        return Service.api().put(
+            '/product/' + product.id,
+            product
+        );
     }
 }
