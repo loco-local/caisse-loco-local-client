@@ -38,11 +38,16 @@ const routes = [
         path: '/produits',
         name: 'Products',
         component: () => import('../views/Products.vue')
+    },
+    {
+        path: '/produit/:productId',
+        name: 'ProductEdit',
+        component: () => import('../views/Product.vue')
     }
 ]
 
 const router = new VueRouter({
-    mode: 'history',
+    mode    : 'history',
     base: process.env.BASE_URL,
     scrollBehavior() {
         // if (savedPosition) {

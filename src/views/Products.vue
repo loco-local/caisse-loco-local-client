@@ -32,6 +32,14 @@
         <template v-slot:item.price="{ item }">
           {{ item.price | currency }}
         </template>
+        <template v-slot:item.isTaxable="{ item }">
+          <v-icon v-if="item.isTaxable">
+            done
+          </v-icon>
+          <v-icon v-else>
+            clear
+          </v-icon>
+        </template>
         <template v-slot:item.isAvailable="{ item }">
           <v-icon v-if="item.isAvailable">
             done
@@ -90,6 +98,10 @@ export default {
           value: 'category.name'
         },
         {
+          text: "Taxable",
+          value: 'isTaxable'
+        },
+        {
           text: "Quantité",
           value: "nbInStock"
         },
@@ -117,7 +129,7 @@ export default {
     },
     editProduct: function (productId) {
       this.$router.push({
-        path: '/product/' + productId
+        path: '/produit/' + productId
       })
     }
   }
