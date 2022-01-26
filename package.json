@@ -46,9 +46,7 @@
     "rules": {}
   },
   "browserslist": [
-    "Chrome >= 63",
-    "Safari >= 9",
-    "iOS >= 9",
-    "not ie <= 10"
+    "Chrome >= 62",
+    "iOS >= 9"
   ]
 }

@@ -4,7 +4,7 @@ import RequestErrors from '@/requestError'
 
 const Service = {
     baseUrl: function () {
-        const apiPort = process.env.VUE_APP_API_PORT || '443';
+        const apiPort = process.env.VUE_APP_API_PORT || '80';
         return location.protocol + '//' + location.hostname + ':' + apiPort + '/api';
     },
     api: function (isForGraphElement) {
