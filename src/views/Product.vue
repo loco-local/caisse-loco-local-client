@@ -12,6 +12,13 @@
               v-model="product.hasDecimalQuantity"
           />
           <v-text-field v-model="product.name" label="Nom" :rules="[rules.required]"></v-text-field>
+          <v-select
+              :items="categories"
+              label="Catégorie"
+              item-text="name"
+              item-value="id"
+              v-model="product.CategoryId"
+          ></v-select>
           <v-text-field v-model="product.description" label="Description"></v-text-field>
           <v-checkbox
               label="Est taxable"
@@ -98,6 +105,7 @@
 <script>
 import ProductService from "@/service/ProductService";
 import Rules from '@/Rules'
+import CategoryService from "@/service/CategoryService";
 
 export default {
   name: "Product",
@@ -106,6 +114,7 @@ export default {
   },
   data: function () {
     return {
+      categories: [],
       product: {},
       rules: Rules,
       modifyProductSuccess: false,
@@ -113,6 +122,8 @@ export default {
     }
   },
   mounted: async function () {
+    let response = await CategoryService.list();
+    this.categories = response.data;
     await this.setup();
   },
   methods: {
