@@ -54,7 +54,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
-            to="/produits/catégories"
+            to="/categories-produits"
         >
           <v-list-item-content>
             <v-list-item-title>
@@ -89,7 +89,8 @@ export default {
         "Administration",
         "Products",
         "ProductEdit",
-        "ProductCreate"
+        "ProductCreate",
+        "Categories"
       ].indexOf(this.$route.name) !== -1;
     }
   }

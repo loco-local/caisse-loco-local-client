@@ -35,51 +35,52 @@
         Les prix sont taxes incluses
       </v-card-subtitle>
       <v-row>
-        <v-col v-if="categories.length === 0" cols="12" class="text-h6">
-          <v-sheet height="400" class="grey--text">
-            Pas de résultats
-          </v-sheet>
+        <v-col cols="12">
+          <v-col v-if="categories.length === 0" cols="12" class="text-h6">
+            <v-sheet height="400" class="grey--text">
+              Pas de résultats
+            </v-sheet>
+          </v-col>
+          <v-row wrap v-for="category in categories" :key="category.id" class="" v-else>
+            <v-col cols="12" class="text-left" v-if="category.products.length > 1">
+              <h4 class="">
+                {{ category.name }}
+              </h4>
+            </v-col>
+            <v-col cols="12" md="4" class="text-center" v-for="product in category.products"
+                   :key="product.id">
+              <v-card height="150" @click="selectProduct(product)" class="vh-center"
+                      :dark="isProductInTransaction(product)" :color="cardColorFromProduct(product)">
+                <v-chip
+                    color="transparent"
+                    v-if="product.quantity && !product.isActivity"
+                    style="margin-bottom: -16px;"
+                    class="font-weight-bold"
+                >
+                  Quantité: {{ product.quantity }}
+                </v-chip>
+                <v-chip
+                    color="transparent"
+                    v-if="product.isActivity && product.info && product.info.name"
+                    style="margin-bottom: -16px;"
+                    class="font-weight-bold"
+                >
+                  {{ product.info.name }}
+                </v-chip>
+                <v-card-title class="vh-center">
+                  {{ product.name }}
+                </v-card-title>
+                <v-card-subtitle v-if="product.price && !product.isActivity" class="mt-1 text-h6">
+                  {{ product.price | currency }}
+                  <small v-if="product.isPriceInKg">/kg</small>
+                </v-card-subtitle>
+                <v-card-text v-if="product.description">
+                  {{ product.description }}
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-col>
-
-        <v-row wrap v-for="category in categories" :key="category.id" class="" v-else>
-          <v-col cols="12" class="text-left" v-if="category.products.length > 1">
-            <h4 class="">
-              {{ category.name }}
-            </h4>
-          </v-col>
-          <v-col cols="12" md="4" class="text-center" v-for="product in category.products"
-                 :key="product.id">
-            <v-card height="150" @click="selectProduct(product)" class="vh-center"
-                    :dark="isProductInTransaction(product)" :color="cardColorFromProduct(product)">
-              <v-chip
-                  color="transparent"
-                  v-if="product.quantity && !product.isActivity"
-                  style="margin-bottom: -16px;"
-                  class="font-weight-bold"
-              >
-                Quantité: {{ product.quantity }}
-              </v-chip>
-              <v-chip
-                  color="transparent"
-                  v-if="product.isActivity && product.info && product.info.name"
-                  style="margin-bottom: -16px;"
-                  class="font-weight-bold"
-              >
-                {{ product.info.name }}
-              </v-chip>
-              <v-card-title class="vh-center">
-                {{ product.name }}
-              </v-card-title>
-              <v-card-subtitle v-if="product.price && !product.isActivity" class="mt-1 text-h6">
-                {{ product.price | currency }}
-                <small v-if="product.isPriceInKg">/kg</small>
-              </v-card-subtitle>
-              <v-card-text v-if="product.description">
-                {{ product.description }}
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
       </v-row>
     </v-card>
     <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600">
