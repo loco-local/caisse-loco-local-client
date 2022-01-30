@@ -2,9 +2,6 @@
   <Page>
     <v-card flat>
       <v-card-actions class="mb-4">
-        <v-btn to="/">
-          Annuler
-        </v-btn>
         <v-spacer></v-spacer>
         <v-btn color="secondary" dark @click="addCategory()" fab absolute right>
           <v-icon>add</v-icon>

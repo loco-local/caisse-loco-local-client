@@ -4,8 +4,8 @@ export default {
     listForUserId: function (userId) {
         return Service.api().get(userId + '/transaction')
     },
-    listAllDetails: function (yearFilter) {
-        return Service.api().get('/transactions/details/' + yearFilter)
+    listAllDetails: function () {
+        return Service.api().get('/transactions/details')
     },
     removeTransaction: function (transactionId) {
         return Service.api().delete('/transaction/' + transactionId)

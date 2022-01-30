@@ -33,7 +33,7 @@
         fixed
     >
       <v-list class="">
-        <v-list-item>
+        <v-list-item to="/transactions">
           <v-list-item-content>
             <v-list-item-title>
               Transactions
@@ -90,7 +90,8 @@ export default {
         "Products",
         "ProductEdit",
         "ProductCreate",
-        "Categories"
+        "Categories",
+        "Transactions"
       ].indexOf(this.$route.name) !== -1;
     }
   }
