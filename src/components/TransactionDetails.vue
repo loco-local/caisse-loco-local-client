@@ -27,19 +27,41 @@
               {{ item.amountWithoutTax | currency }}
             </td>
             <td class="text-left pl-6">
-              {{ item.tpsAmount | currency }}
-            </td>
-            <td class="text-left pl-6">
-              {{ item.tvqAmount | currency }}
-            </td>
-            <td class="text-left pl-6">
               {{ item.quantity }}
             </td>
-            <td class="text-left">{{ (item.price * item.quantity) | currency }}</td>
+            <td class="text-left">
+              {{ (item.amountWithoutTax * item.quantity) | currency }}
+              <span v-if="item.isTaxable">Tx</span>
+            </td>
+
           </tr>
           <tr>
             <td></td>
             <td></td>
+            <td></td>
+            <td>
+              <strong v-if="transactionItems.length > 0" class="caption font-weight-bold">
+                {{ tvqTotal | currency }}
+                <span class="text-capitalize">
+                TVQ
+            </span>
+              </strong>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+              <strong v-if="transactionItems.length > 0" class="caption font-weight-bold">
+                {{ tpsTotal | currency }}
+                <span class="text-capitalize">
+                TPS
+            </span>
+              </strong>
+            </td>
+          </tr>
+          <tr>
             <td></td>
             <td></td>
             <td></td>
@@ -141,14 +163,6 @@ export default {
           value: 'amountWithoutTax'
         },
         {
-          text: 'TPS',
-          value: 'tpsAmount'
-        },
-        {
-          text: 'TVQ',
-          value: 'tvqAmount'
-        },
-        {
           text: 'Quantité',
           value: 'quantity'
         },
@@ -181,6 +195,16 @@ export default {
         return item;
       })
     },
+    tvqTotal: function () {
+      return this.products.reduce((total, item) => {
+        return total + item.tvqAmount
+      }, 0)
+    },
+    tpsTotal: function () {
+      return this.products.reduce((total, item) => {
+        return total + item.tpsAmount;
+      }, 0)
+    },
     transactionItemsTotal: function () {
       return this.transactionItems.reduce((sum, item) => {
             return sum + item.quantity * item.price;
@@ -207,10 +231,10 @@ export default {
   },
   methods: {
     TVQFromAmountWithTax(product) {
-      return product.isTaxable ? product.amountWithoutTax * 0.09975 : 0;
+      return product.isTaxable ? product.amountWithoutTax * 0.09975 * product.quantity : 0;
     },
     TPSFromAmountWithTax(product) {
-      return product.isTaxable ? product.amountWithoutTax * 0.05 : 0;
+      return product.isTaxable ? product.amountWithoutTax * 0.05 * product.quantity : 0;
     },
     amountWithoutTax(product) {
       return product.isTaxable ? product.price / 1.14975 : product.price;
