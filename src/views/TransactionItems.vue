@@ -27,6 +27,12 @@
           {{ item.Product.name }}
           <span v-if="item.info">{{item.info.name}}</span>
         </template>
+        <template v-slot:item.tps="{ item }">
+          {{ item.tps | currency }}
+        </template>
+        <template v-slot:item.tvq="{ item }">
+          {{ item.tvq | currency }}
+        </template>
         <template v-slot:item.createdAt="{ item }">
           {{ item.createdAt | dayDate }}
         </template>
@@ -103,6 +109,14 @@ export default {
         {
           text: "Prix total",
           value: 'totalPrice'
+        },
+        {
+          text: "TVQ",
+          value: 'tvq'
+        },
+        {
+          text: "TPS",
+          value: 'tps'
         },
         {
           text: "Créé",

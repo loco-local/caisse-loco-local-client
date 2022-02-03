@@ -190,8 +190,8 @@ export default {
         return item.quantity > 0
       }).map((item) => {
         item.amountWithoutTax = this.amountWithoutTax(item);
-        item.tvqAmount = this.TVQFromAmountWithTax(item);
-        item.tpsAmount = this.TPSFromAmountWithTax(item);
+        item.tvqAmount = this.calculateTVQ(item);
+        item.tpsAmount = this.calculateTPS(item);
         return item;
       })
     },
@@ -230,10 +230,10 @@ export default {
     clearInterval(this.timeoutInterval)
   },
   methods: {
-    TVQFromAmountWithTax(product) {
+    calculateTVQ(product) {
       return product.isTaxable ? product.amountWithoutTax * 0.09975 * product.quantity : 0;
     },
-    TPSFromAmountWithTax(product) {
+    calculateTPS(product) {
       return product.isTaxable ? product.amountWithoutTax * 0.05 * product.quantity : 0;
     },
     amountWithoutTax(product) {
