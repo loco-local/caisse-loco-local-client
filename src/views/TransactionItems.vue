@@ -3,6 +3,9 @@
     <v-card flat>
       <v-card-actions class="mb-4">
         <v-spacer></v-spacer>
+        <v-btn color="" @click="exportTransactionsToCsv">
+          Exporter en CSV
+        </v-btn>
       </v-card-actions>
       <v-data-table
           :headers="headers"
@@ -25,7 +28,7 @@
         </template>
         <template v-slot:item.Product.name="{ item }">
           {{ item.Product.name }}
-          <span v-if="item.info">{{item.info.name}}</span>
+          <span v-if="item.info">{{ item.info.name }}</span>
         </template>
         <template v-slot:item.tps="{ item }">
           {{ item.tps | currency }}
@@ -45,32 +48,13 @@
         </v-layout>
       </v-data-table>
     </v-card>
-    <v-snackbar
-        v-model="categoryModifySuccess"
-        bottom
-        color="accent"
-        dark
-        :timeout="7000"
-        class="font-weight-bold body-1"
-    >
-      La catégorie a été modifiée.
-      <template v-slot:action="{ attrs }">
-        <v-btn
-            color="white"
-            text
-            icon
-            v-bind="attrs"
-            @click="categoryModifySuccess = false"
-        >
-          <v-icon>close</v-icon>
-        </v-btn>
-      </template>
-    </v-snackbar>
   </Page>
 </template>
 
 <script>
 import TransactionService from "@/service/TransactionService";
+import {format} from 'date-fns'
+import ExportToCsv from "@/ExportToCsv";
 
 export default {
   name: "Transactions",
@@ -129,7 +113,45 @@ export default {
     const response = await TransactionService.listAllDetails();
     this.transactionItems = response.data;
   },
-  methods: {}
+  methods: {
+    exportTransactionsToCsv: function () {
+      let data = [
+        [
+          'Description',
+          'Withdrawal',
+          'Deposit',
+          'Date'
+        ]
+      ];
+      let fileName = "transactions.csv";
+      this.transactionItems.forEach((item) => {
+        data.push([
+          item.Product.name,
+          item.price,
+          0,
+          format(new Date(), 'yyyy-MM-dd')
+        ])
+      })
+      ExportToCsv.build(fileName, data);
+    },
+  },
+  computed: {
+    prepaidTransactions: function () {
+      return this.transactionItems.filter(()=>{
+
+      });
+    },
+    cashTransactions: function () {
+      return this.transactionItems.filter(()=>{
+
+      });
+    },
+    interactTransactions: function () {
+      return this.transactionItems.filter(()=>{
+
+      });
+    }
+  }
 }
 </script>
 
