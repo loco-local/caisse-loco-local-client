@@ -91,7 +91,7 @@
         <v-card-text>
           <v-form ref="quantityForm">
             <v-row class="vh-center">
-              <v-col cols="4">
+              <v-col cols="6" md="4">
                 <v-text-field
                     clearable
                     label="Poids"
@@ -137,7 +137,7 @@
         <v-form ref="activityForm">
           <v-card-text>
             <v-row class="vh-center">
-              <v-col cols="8">
+              <v-col cols="10" md="8">
                 <v-text-field
                     clearable
                     label="Montant récolté"
@@ -154,7 +154,7 @@
           </v-card-text>
           <v-card-text>
             <v-row class="vh-center">
-              <v-col cols="8">
+              <v-col cols="10" md="8">
                 <v-text-field
                     clearable
                     label="Nom de l'activité"
@@ -168,7 +168,7 @@
           </v-card-text>
           <v-card-text>
             <v-row class="vh-center">
-              <v-col cols="8">
+              <v-col cols="10" md="8">
                 <v-text-field
                     clearable
                     label="Nombre de participants ?"
@@ -214,7 +214,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-dialog v-model="showPaymentModal" width="900">
+    <v-dialog v-model="showPaymentModal" width="900" :fullscreen="$vuetify.breakpoint.smAndDown">
       <v-card flat>
         <v-card-text>
           <TransactionDetails :products="selectedProducts" :key="detailsKey"

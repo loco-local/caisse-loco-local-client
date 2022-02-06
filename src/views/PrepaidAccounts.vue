@@ -10,6 +10,9 @@
           <v-icon>add</v-icon>
         </v-btn>
       </v-card-actions>
+      <v-card-title>
+        Comptes Prépayés
+      </v-card-title>
       <v-data-table
           :headers="headers"
           :items="prepaidAccounts"

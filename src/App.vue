@@ -22,7 +22,7 @@
         <v-icon left size="25">
           account_circle
         </v-icon>
-        Comptes Prépayés
+        <span v-if="$vuetify.breakpoint.mdAndUp">Comptes Prépayés</span>
       </v-btn>
     </v-app-bar>
     <v-navigation-drawer
