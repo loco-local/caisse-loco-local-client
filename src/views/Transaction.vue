@@ -216,7 +216,7 @@
     </v-snackbar>
     <v-dialog v-model="showPaymentModal" width="900" :fullscreen="$vuetify.breakpoint.smAndDown">
       <v-card flat>
-        <v-card-text>
+        <v-card-text class="pb-0 pl-0 pr-0">
           <TransactionDetails :products="selectedProducts" :key="detailsKey"
                               :ardoiseUser="null"/>
         </v-card-text>
@@ -250,7 +250,7 @@
               v-if="isLoadingUsers"
           ></v-progress-circular>
           <v-row class="vh-center">
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <v-select
                   v-if="!isLoadingUsers"
                   :items="users"
@@ -259,6 +259,7 @@
                   item-text="text"
                   return-object
                   v-model="prepaidUser"
+                  @change="personName = prepaidUser.firstname + ' ' + prepaidUser.lastname"
               >
                 <template v-slot:item="{ item }">
                   <v-list-item-content>
@@ -274,8 +275,11 @@
             </v-col>
           </v-row>
         </v-card-text>
+        <v-card-text class="pb-0">
+          <v-text-field label="Votre nom" hint="Pour que l'on vous reconnaisse" v-model="personName"></v-text-field>
+        </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
           <v-btn color="secondary"
                  @click.native="confirmTransaction" large
                  :loading="isWaitingForTransaction"
@@ -330,6 +334,7 @@ export default {
       nameOfSelectedProduct: null,
       nbParticipantsOfSelectedProduct: null,
       paymentMethod: null,
+      personName: null,
       completedDialog: false,
       prepaidUser: null,
       isLoadingUsers: false,
@@ -357,10 +362,11 @@ export default {
         this.prepaidUser.balance -= this.transactionItemsTotal;
         await TransactionService.addForUserId(
             this.selectedProducts,
-            this.prepaidUser.id
+            this.prepaidUser.id,
+            this.personName
         );
       } else {
-        await TransactionService.addForAnonymous(this.selectedProducts);
+        await TransactionService.addForAnonymous(this.selectedProducts, this.paymentMethod, this.personName);
       }
       this.showPaymentModal = false;
       this.showConfirmSnackbar = false;

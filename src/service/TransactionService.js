@@ -13,16 +13,24 @@ export default {
     getDetails: function (user, transaction) {
         return Service.api().get(user.id + '/transaction/' + transaction.id)
     },
-    addForUserId: function (items, userId) {
+    addForUserId: function (items, userId, personName) {
         return Service.api().post(
             userId + '/transaction',
-            items
+            {
+                items: items,
+                personName: personName
+            }
         )
     },
-    addForAnonymous: function (items) {
+    addForAnonymous: function (items, paymentMethod, personName) {
+        console.log(items)
         return Service.api().post(
             '/transaction',
-            items
+            {
+                items: items,
+                paymentMethod: paymentMethod,
+                personName: personName
+            }
         )
     },
     addFundToAccount: function (amount, accountId) {

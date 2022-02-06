@@ -8,35 +8,37 @@
       </v-card-text>
     </v-card>
     <v-card-text>
-      <v-simple-table v-if="transactionItemsTotal > 0" class="mb-4" dense>
+      <v-simple-table v-if="transactionItemsTotal > 0" class="" dense>
         <template v-slot:default>
-          <thead>
-          <th v-for="header in headers" :key="header.value" class="text-left pl-4 s">
-            {{ header.text }}
-          </th>
-          </thead>
-          <tbody class="mt-4 mb-4">
+<!--          <thead>-->
+<!--          <th v-for="header in headers" :key="header.value" class="text-left pl-4 s">-->
+<!--            {{ header.text }}-->
+<!--          </th>-->
+<!--          </thead>-->
+          <tbody class="mb-4">
           <tr
               v-for="item in transactionItems"
               :key="item.id"
           >
-            <td class="text-left">
+            <td class="text-left font-weight-bold">
               {{ (item.amountWithoutTax * item.quantity) | currency }}
-              <span v-if="item.isTaxable">Tx</span>
+              <small v-if="item.isTaxable">Tx</small>
             </td>
             <td class="text-left">
               {{ item.name }}
             </td>
             <td class="text-left pl-6">
-              {{ item.quantity }}
+              {{ item.quantity }}x
             </td>
             <td class="text-left pl-6">
               {{ item.amountWithoutTax | currency }}
+              <span v-if="item.isPriceInKg">/kg</span>
+              <span v-else-if="!item.isActivity">/u</span>
             </td>
           </tr>
           <tr>
             <td>
-              <span v-if="transactionItems.length > 0" class="caption">
+              <span v-if="transactionItems.length > 0" class="caption font-weight-bold">
                 {{ tvqTotal | currency }}
                 <span class="text-capitalize">
                 TVQ
@@ -49,7 +51,7 @@
           </tr>
           <tr>
             <td>
-              <span v-if="transactionItems.length > 0" class="caption">
+              <span v-if="transactionItems.length > 0" class="caption font-weight-bold">
                 {{ tpsTotal | currency }}
                 <span class="text-capitalize">
                 TPS
@@ -60,18 +62,17 @@
             <td></td>
             <td></td>
           </tr>
-          <tr>
-            <td>
-              <strong v-if="transactionItems.length > 0" class="subtitle-1 font-weight-bold">
-                {{ transactionItemsTotal | currency }}
-                <span class="text-capitalize">
+          <tr style="background-color: #eee">
+            <td colspan="4" class="text-center">
+              <div>
+                <strong v-if="transactionItems.length > 0" class="subtitle-1 font-weight-bold">
+                  {{ transactionItemsTotal | currency }}
+                  <span class="text-uppercase">
                 Total
-            </span>
-              </strong>
+                </span>
+                </strong>
+              </div>
             </td>
-            <td></td>
-            <td></td>
-            <td></td>
           </tr>
           </tbody>
         </template>
@@ -154,18 +155,18 @@ export default {
       },
       headers: [
         {
-          text: 'Total'
+          text: ''
         },
         {
-          text: 'Nom',
+          text: '',
           value: 'name'
         },
         {
-          text: 'Qt',
+          text: '',
           value: 'quantity'
         },
         {
-          text: 'Prix',
+          text: '',
           value: 'amountWithoutTax'
         }
       ],
