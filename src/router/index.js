@@ -57,7 +57,7 @@ const routes = [
     {
         path: '/transactions',
         name: 'Transactions',
-        component: () => import('../views/TransactionItems.vue')
+        component: () => import('../views/TransactionItemsPage.vue')
     }
 ]
 
