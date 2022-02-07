@@ -32,6 +32,12 @@
         {{ item.description }}
         <span v-if="item.info">{{ item.info.name }}</span>
       </template>
+      <template v-slot:item.price="{ item }">
+        {{ item.price | currency}}
+      </template>
+      <template v-slot:item.totalPrice="{ item }">
+        {{ item.totalPrice | currency}}
+      </template>
       <template v-slot:item.tps="{ item }">
         {{ item.tps | currency }}
       </template>
@@ -112,8 +118,8 @@ export default {
       let data = [
         [
           'Description',
-          'Withdrawal',
-          'Deposit',
+          'Retrait',
+          'Depot',
           'Date'
         ]
       ];
@@ -122,9 +128,9 @@ export default {
         let withdrawal = 0;
         let deposit = 0;
         if (Math.sign(item.price) === -1) {
-          deposit = Math.abs(item.price);
+          deposit = Math.abs(item.totalPrice).toFixed(2);
         } else {
-          withdrawal = item.price;
+          withdrawal = item.totalPrice.toFixed(2);
         }
         data.push([
           item.description,
