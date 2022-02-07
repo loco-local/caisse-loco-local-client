@@ -119,10 +119,17 @@ export default {
       ];
       let fileName = "transactions.csv";
       this.transactionItems.forEach((item) => {
+        let withdrawal = 0;
+        let deposit = 0;
+        if (Math.sign(item.price) === -1) {
+          deposit = Math.abs(item.price);
+        } else {
+          withdrawal = item.price;
+        }
         data.push([
           item.description,
-          item.price,
-          0,
+          parseFloat(withdrawal).toString().replace(".", ","),
+          parseFloat(deposit).toString().replace(".", ","),
           format(new Date(), 'yyyy-MM-dd')
         ])
       })

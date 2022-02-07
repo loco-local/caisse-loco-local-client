@@ -47,6 +47,9 @@
           ></v-radio>
         </v-radio-group>
       </v-card-text>
+      <v-card-text class="pb-0">
+        <v-text-field label="Votre nom" hint="Pour que l'on vous reconnaisse" v-model="personName"></v-text-field>
+      </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="addFund" :disabled="prepaidAmount === null || paymentMethod === null ">
           Ajouter
@@ -175,6 +178,7 @@ export default {
       transactions: [],
       prepaidAmount: null,
       paymentMethod: null,
+      personName: null,
       createAccountSuccess: false,
       modifyAccountSuccess: false
     };
@@ -190,6 +194,7 @@ export default {
       }
       let response = await UserService.getById(this.account.id);
       this.account = response.data;
+      this.personName = this.account.firstname + ' ' + this.account.lastname;
       await this.buildTransactions();
     },
     create: async function () {
@@ -212,7 +217,9 @@ export default {
       this.account.balance += this.prepaidAmount;
       await TransactionService.addFundToAccount(
           this.prepaidAmount,
-          this.account.id
+          this.account.id,
+          this.paymentMethod,
+          this.personName
       );
       this.$refs.completePaymentModal.enter();
     },

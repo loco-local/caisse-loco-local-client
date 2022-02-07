@@ -33,12 +33,14 @@ export default {
             }
         )
     },
-    addFundToAccount: function (amount, accountId) {
+    addFundToAccount: function (amount, accountId, paymentMethod, personName) {
         return Service.api().post(
             '/transaction/fund',
             {
                 amount: amount,
-                accountId: accountId
+                accountId: accountId,
+                paymentMethod: paymentMethod,
+                personName: personName
             }
         )
     }
