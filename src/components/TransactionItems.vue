@@ -28,8 +28,8 @@
             class="mx-4"
         ></v-text-field>
       </template>
-      <template v-slot:item.Product.name="{ item }">
-        {{ item.Product.name }}
+      <template v-slot:item.description="{ item }">
+        {{ item.description }}
         <span v-if="item.info">{{ item.info.name }}</span>
       </template>
       <template v-slot:item.tps="{ item }">
@@ -78,7 +78,7 @@ export default {
         // rebates: DataTypes.JSON
         {
           text: "Nom",
-          value: 'Product.name'
+          value: 'description'
         },
         {
           text: "Prix unitaire",
@@ -120,7 +120,7 @@ export default {
       let fileName = "transactions.csv";
       this.transactionItems.forEach((item) => {
         data.push([
-          item.Product.name,
+          item.description,
           item.price,
           0,
           format(new Date(), 'yyyy-MM-dd')
