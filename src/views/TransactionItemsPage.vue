@@ -34,20 +34,29 @@ export default {
   },
   mounted: async function () {
     const response = await TransactionService.listAllDetails();
-    this.transactionItems = response.data;
+    this.transactionItems = response.data.map((transaction) => {
+          let personName = transaction.Transaction.personName;
+          personName = personName === null ? "" : " " + personName;
+          transaction.description = transaction.description + personName;
+          return transaction;
+        }
+    )
   },
-  methods: {},
+  methods: {}
+  ,
   computed: {
     prepaidTransactions: function () {
       return this.transactionItems.filter((transaction) => {
         return transaction.Transaction.paymentMethod === 'prepaid'
       });
-    },
+    }
+    ,
     cashTransactions: function () {
       return this.transactionItems.filter((transaction) => {
         return transaction.Transaction.paymentMethod === 'cash'
       });
-    },
+    }
+    ,
     interactTransactions: function () {
       return this.transactionItems.filter((transaction) => {
         return transaction.Transaction.paymentMethod === 'interact'
