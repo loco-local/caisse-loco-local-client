@@ -43,8 +43,12 @@
               type="number"
           />
           <v-checkbox
-              label="Est une activité"
+              label="Est le produit 'Activité'"
               v-model="product.isActivity"
+          />
+          <v-checkbox
+              label="Est le produit 'Autre'"
+              v-model="product.isOther"
           />
         </v-form>
       </v-card-text>

@@ -129,6 +129,47 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="otherProductDialog" v-if="otherProductDialog" max-width="600">
+      <v-card>
+        <v-card-title class="vh-center">
+          {{ selectedProduct.name }}
+        </v-card-title>
+        <v-form ref="otherProductForm">
+          <v-card-text>
+            <v-row class="vh-center">
+              <v-col cols="10" md="8">
+                <v-text-field
+                    clearable
+                    label="Montant"
+                    prepend-inner-icon="attach_money"
+                    ref="priceInput"
+                    v-model="priceOfSelectedProduct"
+                    type="number"
+                    size="2"
+                    @keydown="otherProductKeydown"
+                    :rules="[Rules.required]"
+                    required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-text>
+            <v-row class="vh-center">
+              <v-col cols="10" md="8">
+                <v-text-field
+                    clearable
+                    label="Nom du produit"
+                    v-model="nameOfSelectedProduct"
+                    @keydown="otherProductKeydown"
+                    :rules="[Rules.required]"
+                    required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-form>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600">
       <v-card>
         <v-card-title class="vh-center">
@@ -142,6 +183,7 @@
                     clearable
                     label="Montant récolté"
                     ref="priceInput"
+                    prepend-inner-icon="attach_money"
                     v-model="priceOfSelectedProduct"
                     type="number"
                     size="2"
@@ -329,6 +371,7 @@ export default {
       detailsKey: Math.random(),
       transactionItemsTotal: 0,
       activityDialog: false,
+      otherProductDialog: false,
       priceOfSelectedProduct: null,
       quantityOfSelectedProduct: null,
       nameOfSelectedProduct: null,
@@ -399,6 +442,11 @@ export default {
         this.confirmActivity();
       }
     },
+    otherProductKeydown: function (event) {
+      if (event.keyCode === ENTER_KEY_CODE) {
+        this.confirmOtherProduct();
+      }
+    },
     quantityKeydown: function (event) {
       if (event.keyCode === ENTER_KEY_CODE) {
         this.confirmQuantity();
@@ -418,6 +466,9 @@ export default {
       if (product.isActivity) {
         return this.selectActivityProduct();
       }
+      if (product.isOther) {
+        return this.selectOtherProduct();
+      }
       this.productQuantityDialog = true;
       await this.$nextTick();
       setTimeout(() => {
@@ -430,6 +481,24 @@ export default {
       setTimeout(() => {
         this.$refs.priceInput.$el.querySelector("input").focus()
       })
+    },
+    selectOtherProduct: async function () {
+      this.otherProductDialog = true;
+      await this.$nextTick();
+      setTimeout(() => {
+        this.$refs.priceInput.$el.querySelector("input").focus()
+      })
+    },
+    confirmOtherProduct: function(price){
+      if (!this.$refs.otherProductForm.validate()) {
+        return;
+      }
+      this.selectedProduct.info = {
+        name: this.nameOfSelectedProduct
+      };
+      this.selectedProduct.quantity = 1;
+      this._confirmPriceOrQuantity(true, price);
+      this.otherProductDialog = false;
     },
     confirmActivity: function (price) {
       if (!this.$refs.activityForm.validate()) {
