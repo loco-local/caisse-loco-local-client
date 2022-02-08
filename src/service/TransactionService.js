@@ -4,8 +4,13 @@ export default {
     listForUserId: function (userId) {
         return Service.api().get(userId + '/transaction')
     },
-    listAllDetails: function () {
-        return Service.api().get('/transactions/details')
+    listAllDetails: function (lowerDate, higherDate) {
+        return Service.api().post(
+            '/transactions/details', {
+                lowerDate: lowerDate,
+                higherDate: higherDate
+            }
+        );
     },
     removeTransaction: function (transactionId) {
         return Service.api().delete('/transaction/' + transactionId)
