@@ -168,6 +168,15 @@
             </v-row>
           </v-card-text>
         </v-form>
+        <v-card-actions>
+          <v-btn @click="otherProductDialog=false">
+            Annuler
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="confirmOtherProduct()">
+            Confirmer
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600">
@@ -489,7 +498,7 @@ export default {
         this.$refs.priceInput.$el.querySelector("input").focus()
       })
     },
-    confirmOtherProduct: function(price){
+    confirmOtherProduct: function (price) {
       if (!this.$refs.otherProductForm.validate()) {
         return;
       }
