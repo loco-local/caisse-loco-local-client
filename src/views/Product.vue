@@ -19,6 +19,13 @@
               item-value="id"
               v-model="product.CategoryId"
           ></v-select>
+          <v-autocomplete
+              :items="accountingCategories"
+              label="Catégorie de comptabilité"
+              item-text="node.name"
+              item-value="node.id"
+              v-model="product.accountingCategoryId"
+          ></v-autocomplete>
           <v-text-field v-model="product.description" label="Description"></v-text-field>
           <v-checkbox
               label="Est taxable"
@@ -110,6 +117,7 @@
 import ProductService from "@/service/ProductService";
 import Rules from '@/Rules'
 import CategoryService from "@/service/CategoryService";
+import WaveAccountingService from "@/service/WaveAccountingService";
 
 export default {
   name: "Product",
@@ -122,12 +130,15 @@ export default {
       product: {},
       rules: Rules,
       modifyProductSuccess: false,
-      createProductSuccess: false
+      createProductSuccess: false,
+      accountingCategories: []
     }
   },
   mounted: async function () {
     let response = await CategoryService.list();
     this.categories = response.data;
+    response = await WaveAccountingService.listCategories();
+    this.accountingCategories = response.data;
     await this.setup();
   },
   methods: {
