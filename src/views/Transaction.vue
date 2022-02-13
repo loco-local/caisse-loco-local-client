@@ -53,7 +53,7 @@
                       :dark="isProductInTransaction(product)" :color="cardColorFromProduct(product)">
                 <v-chip
                     color="transparent"
-                    v-if="product.quantity && !product.isActivity"
+                    v-if="product.quantity && !product.isActivity && !product.isOther"
                     style="margin-bottom: -16px;"
                     class="font-weight-bold"
                 >
@@ -70,7 +70,7 @@
                 <v-card-title class="vh-center">
                   {{ product.name }}
                 </v-card-title>
-                <v-card-subtitle v-if="product.price && !product.isActivity" class="mt-1 text-h6">
+                <v-card-subtitle v-if="product.price && !product.isActivity && !product.isOther" class="mt-1 text-h6">
                   {{ product.price | currency }}
                   <small v-if="product.isPriceInKg">/kg</small>
                 </v-card-subtitle>
