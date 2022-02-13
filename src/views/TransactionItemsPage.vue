@@ -54,6 +54,11 @@
         <v-btn color="primary" @click="updateTransactions">Appliquer</v-btn>
       </v-card-actions>
     </v-card>
+    <TransactionItems :transactionItems="notAddedInWave" class="mb-12">
+      <div slot="title">
+        Pas ajoutées dans Wave
+      </div>
+    </TransactionItems>
     <TransactionItems :transactionItems="cashTransactions" class="mb-12">
       <div slot="title">
         Cash
@@ -131,6 +136,11 @@ export default {
     interactTransactions: function () {
       return this.transactionItems.filter((transaction) => {
         return transaction.Transaction.paymentMethod === 'interact'
+      });
+    },
+    notAddedInWave: function () {
+      return this.transactionItems.filter((transaction) => {
+        return transaction.isAddedToWave === null || transaction.isAddedToWave === false;
       });
     }
   }
