@@ -59,6 +59,11 @@
         Pas ajoutées dans Wave
       </div>
     </TransactionItems>
+    <TransactionItems :transactionItems="interactTransactions">
+      <div slot="title">
+        Interact
+      </div>
+    </TransactionItems>
     <TransactionItems :transactionItems="cashTransactions" class="mb-12">
       <div slot="title">
         Cash
@@ -67,11 +72,6 @@
     <TransactionItems :transactionItems="prepaidTransactions" class="mb-12">
       <div slot="title">
         Prépayé
-      </div>
-    </TransactionItems>
-    <TransactionItems :transactionItems="interactTransactions">
-      <div slot="title">
-        Interact
       </div>
     </TransactionItems>
   </Page>
