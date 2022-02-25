@@ -553,6 +553,9 @@ export default {
     let response = await ProductService.listAvailable();
     const products = response.data;
     products.forEach((product) => {
+      if (product.isActivity || product.isOther) {
+        product.price = null;
+      }
       if (this.categories[product.CategoryId] === undefined) {
         this.categories[product.CategoryId] = {
           name: product.category.name,
