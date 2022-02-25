@@ -251,6 +251,7 @@
         multi-line
         v-model="showConfirmSnackbar"
         class="pl-8 pb-8"
+        v-if="!productQuantityDialog && !otherProductDialog && !activityDialog"
     >
       <span class="font-weight-bold body-1">
         Total: {{ transactionItemsTotal | currency }}
