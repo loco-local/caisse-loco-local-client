@@ -209,7 +209,7 @@
                 <v-text-field
                     clearable
                     label="Nom de l'activité"
-                    v-model="nameOfSelectedProduct"
+                    v-model="nameOfSelectedActivity"
                     @keydown="activityKeydown"
                     :rules="[Rules.required]"
                     required
@@ -385,6 +385,7 @@ export default {
       priceOfSelectedProduct: null,
       quantityOfSelectedProduct: null,
       nameOfSelectedProduct: null,
+      nameOfSelectedActivity: null,
       nbParticipantsOfSelectedProduct: null,
       paymentMethod: null,
       personName: null,
@@ -515,7 +516,7 @@ export default {
         return;
       }
       this.selectedProduct.info = {
-        name: this.nameOfSelectedProduct,
+        name: this.nameOfSelectedActivity,
         nbParticipants: this.nbParticipantsOfSelectedProduct
       };
       this.selectedProduct.quantity = 1;
