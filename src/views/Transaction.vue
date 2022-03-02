@@ -53,7 +53,7 @@
                       :dark="isProductInTransaction(product)" :color="cardColorFromProduct(product)">
                 <v-chip
                     color="transparent"
-                    v-if="product.quantity && !product.isActivity && !product.isOther"
+                    v-if="product.quantity && !product.isActivity && !product.isOther && !product.isDonation"
                     style="margin-bottom: -16px;"
                     class="font-weight-bold"
                 >
@@ -174,6 +174,42 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="confirmOtherProduct()">
+            Confirmer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="donationProductDialog" v-if="donationProductDialog" max-width="600">
+      <v-card>
+        <v-card-title class="vh-center">
+          {{ selectedProduct.name }}
+        </v-card-title>
+        <v-form ref="donationProductForm">
+          <v-card-text>
+            <v-row class="vh-center">
+              <v-col cols="10" md="8">
+                <v-text-field
+                    clearable
+                    label="Montant"
+                    prepend-inner-icon="attach_money"
+                    ref="priceInput"
+                    v-model="priceOfSelectedProduct"
+                    type="number"
+                    size="2"
+                    @keydown="donationProductDialog"
+                    :rules="[Rules.required]"
+                    required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-form>
+        <v-card-actions>
+          <v-btn @click="donationProductDialog=false">
+            Annuler
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="confirmDonationProduct()">
             Confirmer
           </v-btn>
         </v-card-actions>
@@ -382,6 +418,7 @@ export default {
       transactionItemsTotal: 0,
       activityDialog: false,
       otherProductDialog: false,
+      donationProductDialog: false,
       priceOfSelectedProduct: null,
       quantityOfSelectedProduct: null,
       nameOfSelectedProduct: null,
@@ -458,6 +495,11 @@ export default {
         this.confirmOtherProduct();
       }
     },
+    donationProductKeydown: function (event) {
+      if (event.keyCode === ENTER_KEY_CODE) {
+        this.confirmOtherProduct();
+      }
+    },
     quantityKeydown: function (event) {
       if (event.keyCode === ENTER_KEY_CODE) {
         this.confirmQuantity();
@@ -480,6 +522,9 @@ export default {
       if (product.isOther) {
         return this.selectOtherProduct();
       }
+      if (product.isDonation) {
+        return this.selectDonationProduct();
+      }
       this.productQuantityDialog = true;
       await this.$nextTick();
       setTimeout(() => {
@@ -499,6 +544,21 @@ export default {
       setTimeout(() => {
         this.$refs.priceInput.$el.querySelector("input").focus()
       })
+    },
+    selectDonationProduct: async function () {
+      this.donationProductDialog = true;
+      await this.$nextTick();
+      setTimeout(() => {
+        this.$refs.priceInput.$el.querySelector("input").focus()
+      })
+    },
+    confirmDonationProduct: function (price) {
+      if (!this.$refs.donationProductForm.validate()) {
+        return;
+      }
+      this.selectedProduct.quantity = 1;
+      this._confirmPriceOrQuantity(true, price);
+      this.donationProductDialog = false;
     },
     confirmOtherProduct: function (price) {
       if (!this.$refs.otherProductForm.validate()) {
@@ -553,7 +613,7 @@ export default {
     let response = await ProductService.listAvailable();
     const products = response.data;
     products.forEach((product) => {
-      if (product.isActivity || product.isOther) {
+      if (product.isActivity || product.isOther || product.isDonation) {
         product.price = null;
       }
       if (this.categories[product.CategoryId] === undefined) {

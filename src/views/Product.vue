@@ -57,6 +57,10 @@
               label="Est le produit 'Autre'"
               v-model="product.isOther"
           />
+          <v-checkbox
+              label="Est le produit 'Don'"
+              v-model="product.isDonation"
+          />
         </v-form>
       </v-card-text>
       <v-card-actions>
