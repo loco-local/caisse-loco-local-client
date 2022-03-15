@@ -44,8 +44,8 @@
       <template v-slot:item.tvq="{ item }">
         {{ item.tvq | currency }}
       </template>
-      <template v-slot:item.updatedAt="{ item }">
-        {{ item.updatedAt | dayDate }}
+      <template v-slot:item.createdAt="{ item }">
+        {{ item.createdAt | dayDate }}
       </template>
       <v-layout slot="no-results">
         <v-flex xs3></v-flex>
@@ -69,7 +69,7 @@ export default {
   data: function () {
     return {
       tableOptions: {
-        sortBy: ['updatedAt'],
+        sortBy: ['createdAt'],
         sortDesc: [true]
       },
       search: null,
@@ -108,7 +108,7 @@ export default {
         },
         {
           text: "Créé",
-          value: 'updatedAt'
+          value: 'createdAt'
         }
       ],
     }

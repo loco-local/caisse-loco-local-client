@@ -28,7 +28,7 @@ export default {
         )
     },
     addForAnonymous: function (items, paymentMethod, personName) {
-        console.log(items)
+        // console.log(items)
         return Service.api().post(
             '/transaction',
             {
