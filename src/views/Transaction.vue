@@ -102,6 +102,7 @@
                     v-if="selectedProduct.isPriceInKg"
                     @keydown="quantityKeydown"
                     @click:clear="confirmQuantity(0)"
+                    @keyup="updateModelOnKeyup($event,'quantityOfSelectedProduct')"
                 ></v-text-field>
                 <v-text-field
                     clearable
@@ -113,6 +114,7 @@
                     v-if="!selectedProduct.isPriceInKg"
                     @keydown="quantityKeydown"
                     @click:clear="confirmQuantity(0)"
+                    @keyup="updateModelOnKeyup($event,'quantityOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -149,6 +151,7 @@
                     @keydown="otherProductKeydown"
                     :rules="[Rules.required]"
                     required
+                    @keyup="updateModelOnKeyup($event,'priceOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -163,6 +166,7 @@
                     @keydown="otherProductKeydown"
                     :rules="[Rules.required]"
                     required
+                    @keyup="updateModelOnKeyup($event,'nameOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -199,6 +203,7 @@
                     @keydown="donationProductDialog"
                     :rules="[Rules.required]"
                     required
+                    @keyup="updateModelOnKeyup($event,'priceOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -235,6 +240,7 @@
                     @keydown="activityKeydown"
                     :rules="[Rules.required]"
                     required
+                    @keyup="updateModelOnKeyup($event,'priceOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -249,6 +255,7 @@
                     @keydown="activityKeydown"
                     :rules="[Rules.required]"
                     required
+                    @keyup="updateModelOnKeyup($event,'nameOfSelectedActivity')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -264,6 +271,8 @@
                     @keydown="activityKeydown"
                     :rules="[Rules.required]"
                     required
+                    @keyup="updateModelOnKeyup($event,'nbParticipantsOfSelectedProduct')"
+
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -364,7 +373,11 @@
           </v-row>
         </v-card-text>
         <v-card-text class="pb-0">
-          <v-text-field label="Votre nom" hint="Pour que l'on vous reconnaisse" v-model="personName"></v-text-field>
+          <v-text-field label="Votre nom"
+                        hint="Pour que l'on vous reconnaisse"
+                        v-model="personName"
+                        @keyup="updateModelOnKeyup($event,'personName')"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
@@ -434,6 +447,9 @@ export default {
     }
   },
   methods: {
+    updateModelOnKeyup: function (event, modelName) {
+      this[modelName] = event.target.value;
+    },
     handleChangePaymentMethod: async function () {
       if (this.paymentMethod === 'prepaid') {
         this.isLoadingUsers = true;
