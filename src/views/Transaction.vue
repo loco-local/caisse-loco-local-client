@@ -83,10 +83,12 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600">
+    <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600" persistent top>
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
+          <v-spacer></v-spacer>
+          <v-icon @click="productQuantityDialog = false">close</v-icon>
         </v-card-title>
         <v-card-text>
           <v-form ref="quantityForm">
@@ -131,10 +133,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="otherProductDialog" v-if="otherProductDialog" max-width="600">
+    <v-dialog v-model="otherProductDialog" v-if="otherProductDialog" max-width="600" persistent>
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
+          <v-spacer></v-spacer>
+          <v-icon @click="otherProductDialog=false">close</v-icon>
         </v-card-title>
         <v-form ref="otherProductForm">
           <v-card-text>
@@ -183,10 +187,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="donationProductDialog" v-if="donationProductDialog" max-width="600">
+    <v-dialog v-model="donationProductDialog" v-if="donationProductDialog" max-width="600" persistent>
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
+          <v-spacer></v-spacer>
+          <v-icon @click="donationProductDialog=false">close</v-icon>
         </v-card-title>
         <v-form ref="donationProductForm">
           <v-card-text>
@@ -220,10 +226,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600">
+    <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600" persistent top>
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
+          <v-spacer></v-spacer>
+          <v-icon @click="activityDialog=false">close</v-icon>
         </v-card-title>
         <v-form ref="activityForm">
           <v-card-text>
@@ -376,6 +384,7 @@
           <v-text-field label="Votre nom"
                         hint="Pour que l'on vous reconnaisse"
                         v-model="personName"
+                        :rules="[Rules.required]"
                         @keyup="updateModelOnKeyup($event,'personName')"
           ></v-text-field>
         </v-card-text>
