@@ -466,7 +466,7 @@ export default {
     confirmTransaction: async function () {
       this.isWaitingForTransaction = true;
       if (this.paymentMethod === 'prepaid') {
-        this.prepaidUser.balance -= this.transactionItemsTotal;
+        this.prepaidUser.balance -= parseFloat(this.transactionItemsTotal);
         await TransactionService.addForUserId(
             this.selectedProducts,
             this.prepaidUser.id,

@@ -8,11 +8,34 @@
     <v-card>
       <v-card-text>
         <v-form name="accountForm" ref="accountForm">
-          <v-text-field v-model="account.firstname" label="Prénom"></v-text-field>
-          <v-text-field v-model="account.lastname" label="Nom"></v-text-field>
-          <v-text-field v-model="account.phone" label="Téléphone" prepend-icon="phone"></v-text-field>
-          <v-text-field v-model="account.email" label="Courriel" prepend-icon="mail"></v-text-field>
-          <v-text-field v-model="account.address" label="Adresse" prepend-icon="home"></v-text-field>
+          <v-text-field
+              v-model="account.firstname"
+              label="Prénom"
+              @keyup="updateAccountPropOnKeyup($event, 'firstname')"
+          ></v-text-field>
+          <v-text-field
+              v-model="account.lastname"
+              label="Nom"
+              @keyup="updateAccountPropOnKeyup($event, 'lastname')"
+          ></v-text-field>
+          <v-text-field
+              v-model="account.phone"
+              label="Téléphone"
+              prepend-icon="phone"
+              @keyup="updateAccountPropOnKeyup($event, 'phone')"
+          ></v-text-field>
+          <v-text-field
+              v-model="account.email"
+              label="Courriel"
+              prepend-icon="mail"
+              @keyup="updateAccountPropOnKeyup($event, 'email')"
+          ></v-text-field>
+          <v-text-field
+              v-model="account.address"
+              label="Adresse"
+              prepend-icon="home"
+              @keyup="updateAccountPropOnKeyup($event, 'address')"
+          ></v-text-field>
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -33,6 +56,7 @@
                       v-model.number="prepaidAmount"
                       type="number"
                       min="0"
+                      @keyup="updateModelOnKeyUp($event, 'prepaidAmount')"
         ></v-text-field>
         <v-radio-group v-model="paymentMethod" label="Mode de paiement">
           <v-radio
@@ -48,7 +72,12 @@
         </v-radio-group>
       </v-card-text>
       <v-card-text class="pb-0">
-        <v-text-field label="Votre nom" hint="Pour que l'on vous reconnaisse" v-model="personName"></v-text-field>
+        <v-text-field
+            label="Votre nom"
+            hint="Pour que l'on vous reconnaisse"
+            v-model="personName"
+            @keyup="updateModelOnKeyUp($event, 'personName')"
+        ></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="addFund" :disabled="prepaidAmount === null || paymentMethod === null ">
@@ -187,6 +216,12 @@ export default {
     await this.setup();
   },
   methods: {
+    updateAccountPropOnKeyup: function (event, model) {
+      this.account[model] = event.target.value;
+    },
+    updateModelOnKeyUp: function (event, model) {
+      this[model] = event.target.value;
+    },
     setup: async function () {
       this.account.id = this.$route.params.accountId
       if (!this.account.id) {
@@ -214,7 +249,7 @@ export default {
       if (!this.prepaidAmount || this.prepaidAmount <= 0) {
         return
       }
-      this.account.balance += this.prepaidAmount;
+      this.account.balance += parseFloat(this.prepaidAmount);
       await TransactionService.addFundToAccount(
           this.prepaidAmount,
           this.account.id,
