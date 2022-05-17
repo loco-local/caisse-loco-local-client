@@ -83,7 +83,7 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600" persistent top>
+    <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600" persistent top style=" align-self: flex-end;">
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
@@ -131,6 +131,7 @@
             Confirmer
           </v-btn>
         </v-card-actions>
+        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
     <v-dialog v-model="otherProductDialog" v-if="otherProductDialog" max-width="600" persistent>
@@ -185,6 +186,7 @@
             Confirmer
           </v-btn>
         </v-card-actions>
+        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
     <v-dialog v-model="donationProductDialog" v-if="donationProductDialog" max-width="600" persistent>
@@ -224,6 +226,7 @@
             Confirmer
           </v-btn>
         </v-card-actions>
+        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
     <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600" persistent top>
@@ -295,6 +298,7 @@
             Confirmer
           </v-btn>
         </v-card-actions>
+        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
     <v-snackbar
@@ -319,7 +323,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-dialog v-model="showPaymentModal" width="900" :fullscreen="$vuetify.breakpoint.smAndDown">
+    <v-dialog v-model="showPaymentModal" width="900" :fullscreen="$vuetify.breakpoint.smAndDown" persistent>
       <v-card flat>
         <v-card-text class="pb-0 pl-0 pr-0">
           <TransactionDetails :products="selectedProducts" :key="detailsKey"
@@ -403,6 +407,8 @@
             Annuler
           </v-btn>
         </v-card-actions>
+        <div class="pt-16 pb-16"></div>
+        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
     <CompletePaymentModal ref="completePaymentModal"
