@@ -217,7 +217,7 @@ export default {
   },
   methods: {
     updateAccountPropOnKeyup: function (event, model) {
-      this.account[model] = event.target.value;
+      this.$set(this.account, model, event.target.value);
     },
     updateModelOnKeyUp: function (event, model) {
       this[model] = event.target.value;
