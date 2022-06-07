@@ -83,7 +83,8 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600" persistent top style=" align-self: flex-end;">
+    <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600" persistent top
+              style=" align-self: flex-end;">
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
@@ -325,90 +326,93 @@
     </v-snackbar>
     <v-dialog v-model="showPaymentModal" width="900" :fullscreen="$vuetify.breakpoint.smAndDown" persistent>
       <v-card flat>
-        <v-card-text class="pb-0 pl-0 pr-0">
-          <TransactionDetails :products="selectedProducts" :key="detailsKey"
-                              :ardoiseUser="null"/>
-        </v-card-text>
-        <!--        <v-card-title class="vh-center">-->
-        <!--          Mode de paiement-->
-        <!--        </v-card-title>-->
-        <v-card-text class="vh-center pb-0">
-          <v-radio-group v-model="paymentMethod" @change="handleChangePaymentMethod">
-            <v-radio
-                label="Comptant"
-                value="cash"
-                class="pt-2 pb-2"
-            ></v-radio>
-            <v-radio
-                label="Virement interact à horizonsgaspesiens@gmail.com"
-                value="interact"
-                class="pt-2 pb-2"
-            ></v-radio>
-            <v-radio
-                label="Compte prépayé"
-                value="prepaid"
-                class="pt-2"
-            ></v-radio>
-          </v-radio-group>
-        </v-card-text>
-        <v-card-text v-if="paymentMethod === 'prepaid'" class="vh-center">
-          <v-progress-circular
-              :size="50"
-              color="primary"
-              indeterminate
-              v-if="isLoadingUsers"
-          ></v-progress-circular>
-          <v-row class="vh-center">
-            <v-col cols="12" md="6">
-              <v-select
-                  v-if="!isLoadingUsers"
-                  :items="users"
+        <v-form ref="paymentForm">
+          <!--        <v-card-title class="vh-center">-->
+          <!--          Mode de paiement-->
+          <!--        </v-card-title>-->
+          <v-card-text class="vh-center pb-0">
+            <v-radio-group v-model="paymentMethod" @change="handleChangePaymentMethod">
+              <v-radio
+                  label="Comptant"
+                  value="cash"
+                  class="pt-2 pb-2"
+              ></v-radio>
+              <v-radio
+                  label="Virement interact à horizonsgaspesiens@gmail.com"
+                  value="interact"
+                  class="pt-2 pb-2"
+              ></v-radio>
+              <v-radio
                   label="Compte prépayé"
-                  item-value="id"
-                  item-text="text"
-                  return-object
-                  v-model="prepaidUser"
-                  @change="personName = prepaidUser.firstname + ' ' + prepaidUser.lastname"
-              >
-                <template v-slot:item="{ item }">
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      {{ item.firstname }}
-                      {{ item.lastname }}
-                      <span class="ml-3 mr-3">|</span>
-                      <strong>{{ item.balance | currency }}</strong>
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </template>
-              </v-select>
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-text class="pb-0">
-          <v-text-field label="Votre nom"
-                        hint="Pour que l'on vous reconnaisse"
-                        v-model="personName"
-                        :rules="[Rules.required]"
-                        @keyup="updateModelOnKeyup($event,'personName')"
-          ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-          <v-btn color="secondary"
-                 @click.native="confirmTransaction" large
-                 :loading="isWaitingForTransaction"
-                 :disabled="isWaitingForTransaction || isLoadingUsers || paymentMethod === null || (paymentMethod === 'prepaid' && prepaidUser === null)"
-          >
-            Confirmer
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="" text
-                 @click.native="showPaymentModal = false; showConfirmSnackbar = true">
-            Annuler
-          </v-btn>
-        </v-card-actions>
-        <div class="pt-16 pb-16"></div>
-        <div class="pt-16 pb-16"></div>
+                  value="prepaid"
+                  class="pt-2"
+              ></v-radio>
+            </v-radio-group>
+          </v-card-text>
+          <v-card-text v-if="paymentMethod === 'prepaid'" class="vh-center">
+            <v-progress-circular
+                :size="50"
+                color="primary"
+                indeterminate
+                v-if="isLoadingUsers"
+            ></v-progress-circular>
+            <v-row class="vh-center">
+              <v-col cols="12" md="6">
+                <v-select
+                    v-if="!isLoadingUsers"
+                    :items="users"
+                    label="Compte prépayé"
+                    item-value="id"
+                    item-text="text"
+                    return-object
+                    v-model="prepaidUser"
+                    @change="personName = prepaidUser.firstname + ' ' + prepaidUser.lastname"
+                >
+                  <template v-slot:item="{ item }">
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        {{ item.firstname }}
+                        {{ item.lastname }}
+                        <span class="ml-3 mr-3">|</span>
+                        <strong>{{ item.balance | currency }}</strong>
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </template>
+                </v-select>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-text class="pb-0">
+            <v-text-field label="Votre nom"
+                          hint="Pour que l'on vous reconnaisse"
+                          v-model="personName"
+                          :rules="[Rules.required]"
+                          persistent-hint
+                          @keyup="updateModelOnKeyup($event,'personName')"
+            ></v-text-field>
+          </v-card-text>
+          <v-card-text class="pb-0 pl-0 pr-0">
+            <TransactionDetails :products="selectedProducts" :key="detailsKey"
+                                :ardoiseUser="null"/>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
+            <v-btn color="secondary"
+                   @click.native="confirmTransaction" large
+                   :loading="isWaitingForTransaction"
+                   :disabled="isWaitingForTransaction || isLoadingUsers || paymentMethod === null || (paymentMethod === 'prepaid' && prepaidUser === null)"
+            >
+              Confirmer
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="" text
+                   @click.native="showPaymentModal = false; showConfirmSnackbar = true">
+              Annuler
+            </v-btn>
+          </v-card-actions>
+          <div class="pt-16 pb-16"></div>
+          <div class="pt-16 pb-16"></div>
+        </v-form>
       </v-card>
     </v-dialog>
     <CompletePaymentModal ref="completePaymentModal"
@@ -479,6 +483,9 @@ export default {
       }
     },
     confirmTransaction: async function () {
+      if (!this.$refs.paymentForm.validate()) {
+        return;
+      }
       this.isWaitingForTransaction = true;
       if (this.paymentMethod === 'prepaid') {
         this.prepaidUser.balance -= parseFloat(this.transactionItemsTotal);
