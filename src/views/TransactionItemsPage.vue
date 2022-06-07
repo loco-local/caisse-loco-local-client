@@ -74,6 +74,11 @@
         Prépayé
       </div>
     </TransactionItems>
+    <TransactionItems :transactionItems="bankTransferTransactions">
+      <div slot="title">
+        Transfert Bancaire
+      </div>
+    </TransactionItems>
   </Page>
 </template>
 
@@ -125,17 +130,20 @@ export default {
       return this.transactionItems.filter((transaction) => {
         return transaction.Transaction.paymentMethod === 'prepaid'
       });
-    }
-    ,
+    },
     cashTransactions: function () {
       return this.transactionItems.filter((transaction) => {
         return transaction.Transaction.paymentMethod === 'cash'
       });
-    }
-    ,
+    },
     interactTransactions: function () {
       return this.transactionItems.filter((transaction) => {
         return transaction.Transaction.paymentMethod === 'interact'
+      });
+    },
+    bankTransferTransactions: function () {
+      return this.transactionItems.filter((transaction) => {
+        return transaction.Transaction.paymentMethod === 'bankTransfer'
       });
     },
     notAddedInWave: function () {

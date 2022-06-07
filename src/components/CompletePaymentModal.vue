@@ -24,11 +24,27 @@
           Déposez l'argent comptant dans la caisse sous la balance
         </div>
         <div v-if="paymentMethod === 'interact'">
-          Virement interact à horizonsgaspesiens@gmail.com
+          Virement interact à admin@loco-local.net
           <div>
             Utilisez <strong class="font-italic">bonaventure</strong> comme réponse à la question
           </div>
         </div>
+        <v-row class="vh-center" v-if="paymentMethod === 'bankTransfer'">
+          <v-col cols="12" class="vh-center">
+            <strong class="mr-2">Notre folio:</strong> 40001
+          </v-col>
+          <v-col cols="12" class="vh-center">
+            <strong class="mr-2">No institution:</strong> 815
+          </v-col>
+          <v-col cols="12" class="vh-center">
+            <strong class="mr-2">Folio:</strong> 0451286
+          </v-col>
+          <v-col cols="12">
+            <p class="text-center">
+              Vous pouvez également trouver ces informations sur notre site web dans la section "DON ET PAIEMENTS"
+            </p>
+          </v-col>
+        </v-row>
       </v-card-subtitle>
       <v-card-subtitle v-if="paymentMethod !== 'prepaid' && accountBalance !== null" class="vh-center body-1">
         Votre solde est maintenant de {{ accountBalance | currency }}

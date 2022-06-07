@@ -338,10 +338,26 @@
                   class="pt-2 pb-2"
               ></v-radio>
               <v-radio
-                  label="Virement interact à horizonsgaspesiens@gmail.com"
+                  label="Virement interact à admin@loco-local.net"
                   value="interact"
                   class="pt-2 pb-2"
               ></v-radio>
+              <v-radio
+                  label="Transfert bancaire."
+                  value="bankTransfer"
+                  class="pt-2 pb-0 mb-0"
+                  hint="Transit caisse: 40001, No institution: 815, Folio: 0451286"
+                  persistent-hint
+              ></v-radio>
+              <small class="ml-9">
+                <strong>Transit caisse:</strong> 40001
+              </small>
+              <small class="ml-9">
+                <strong>No institution:</strong> 815
+              </small>
+              <small class="ml-9 pb-2">
+                <strong>Folio:</strong> 0451286
+              </small>
               <v-radio
                   label="Compte prépayé"
                   value="prepaid"
