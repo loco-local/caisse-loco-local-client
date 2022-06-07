@@ -33,10 +33,10 @@
         <span v-if="item.info">{{ item.info.name }}</span>
       </template>
       <template v-slot:item.price="{ item }">
-        {{ item.price | currency}}
+        {{ item.price | currency }}
       </template>
       <template v-slot:item.totalPrice="{ item }">
-        {{ item.totalPrice | currency}}
+        {{ item.totalPrice | currency }}
       </template>
       <template v-slot:item.tps="{ item }">
         {{ item.tps | currency }}
@@ -65,52 +65,57 @@ import ExportToCsv from "@/ExportToCsv";
 export default {
   name: "TransactionItems",
   components: {},
-  props: ['transactionItems'],
+  props: ['transactionItems', 'showPaymentMethod'],
   data: function () {
+    const headers = [
+      {
+        text: "# Facture",
+        value: 'TransactionId'
+      },
+      // totalPrice: DataTypes.DOUBLE,
+      // info: DataTypes.JSON,
+      // totalPriceAfterRebate: DataTypes.DOUBLE,
+      // rebates: DataTypes.JSON
+      {
+        text: "Nom",
+        value: 'description'
+      },
+      {
+        text: "Prix unitaire",
+        value: 'price'
+      },
+      {
+        text: "Quantité",
+        value: 'quantity'
+      },
+      {
+        text: "Prix total",
+        value: 'totalPrice'
+      },
+      {
+        text: "TVQ",
+        value: 'tvq'
+      },
+      {
+        text: "TPS",
+        value: 'tps'
+      },
+      {
+        text: "Créé",
+        value: 'createdAt'
+      }
+    ];
+    headers.push({
+      text: "Méthode",
+      value: 'paymentMethodText'
+    })
     return {
       tableOptions: {
         sortBy: ['createdAt'],
         sortDesc: [true]
       },
       search: null,
-      headers: [
-        {
-          text: "# Facture",
-          value: 'TransactionId'
-        },
-        // totalPrice: DataTypes.DOUBLE,
-        // info: DataTypes.JSON,
-        // totalPriceAfterRebate: DataTypes.DOUBLE,
-        // rebates: DataTypes.JSON
-        {
-          text: "Nom",
-          value: 'description'
-        },
-        {
-          text: "Prix unitaire",
-          value: 'price'
-        },
-        {
-          text: "Quantité",
-          value: 'quantity'
-        },
-        {
-          text: "Prix total",
-          value: 'totalPrice'
-        },
-        {
-          text: "TVQ",
-          value: 'tvq'
-        },
-        {
-          text: "TPS",
-          value: 'tps'
-        },
-        {
-          text: "Créé",
-          value: 'createdAt'
-        }
-      ],
+      headers: headers,
     }
   },
   methods: {

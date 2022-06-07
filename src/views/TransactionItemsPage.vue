@@ -54,7 +54,7 @@
         <v-btn color="primary" @click="updateTransactions">Appliquer</v-btn>
       </v-card-actions>
     </v-card>
-    <TransactionItems :transactionItems="notAddedInWave" class="mb-12">
+    <TransactionItems :transactionItems="notAddedInWave" class="mb-12" :showPaymentMethod="true">
       <div slot="title">
         Pas ajoutées dans Wave
       </div>
@@ -85,6 +85,7 @@
 <script>
 import TransactionService from "@/service/TransactionService";
 import {sub, startOfMonth, endOfMonth, format, startOfDay, endOfDay} from 'date-fns'
+import Transaction from "@/Transaction";
 
 export default {
   name: "TransactionItemsPage",
@@ -120,6 +121,7 @@ export default {
             let personName = transaction.Transaction.personName;
             personName = personName === null ? "" : " " + personName;
             transaction.description = transaction.description + personName;
+            transaction.paymentMethodText = Transaction.paymentMethodText(transaction.Transaction.paymentMethod);
             return transaction;
           }
       );
