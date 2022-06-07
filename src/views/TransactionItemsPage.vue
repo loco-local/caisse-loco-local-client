@@ -112,9 +112,9 @@ export default {
   },
   methods: {
     updateTransactions: async function () {
-      let lowerDate = new Date(this.lowerDate);
+      let lowerDate = new Date(this.lowerDate.replaceAll("-", "/"));
       lowerDate = startOfDay(lowerDate);
-      let higherDate = new Date(this.higherDate);
+      let higherDate = new Date(this.higherDate.replaceAll("-", "/"));
       higherDate = endOfDay(higherDate);
       const response = await TransactionService.listAllDetails(lowerDate, higherDate);
       this.transactionItems = response.data.map((transaction) => {
