@@ -398,13 +398,15 @@
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-text class="pb-0">
-            <v-text-field label="Votre nom"
-                          hint="Pour que l'on vous reconnaisse"
-                          v-model="personName"
-                          :rules="[Rules.required]"
-                          persistent-hint
-                          @keyup="updateModelOnKeyup($event,'personName')"
+          <v-card-text class="pb-0 pt-0">
+            <v-text-field
+                class="pt-0"
+                label="Votre nom"
+                hint="Pour que l'on vous reconnaisse"
+                v-model="personName"
+                :rules="[Rules.required]"
+                persistent-hint
+                @keyup="updateModelOnKeyup($event,'personName')"
             ></v-text-field>
           </v-card-text>
           <v-card-text class="pb-0 pl-0 pr-0">
