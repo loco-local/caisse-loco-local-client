@@ -326,7 +326,7 @@
     </v-snackbar>
     <v-dialog v-model="showPaymentModal" width="900" :fullscreen="$vuetify.breakpoint.smAndDown" persistent>
       <v-card flat>
-        <v-form ref="paymentForm">
+        <v-form ref="paymentForm" @submit.prevent>
           <!--        <v-card-title class="vh-center">-->
           <!--          Mode de paiement-->
           <!--        </v-card-title>-->
@@ -406,6 +406,7 @@
                 v-model="personName"
                 :rules="[Rules.required]"
                 persistent-hint
+
                 @keyup="updateModelOnKeyup($event,'personName')"
             ></v-text-field>
           </v-card-text>

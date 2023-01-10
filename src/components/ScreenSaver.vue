@@ -10,18 +10,18 @@
           >
             <div>
               <v-img :src="getImgUrl(image)">
-                <template v-slot:placeholder>
-                  <v-row
-                      class="fill-height ma-0"
-                      align="center"
-                      justify="center"
-                  >
-                    <v-progress-circular
-                        indeterminate
-                        color="secondary"
-                    ></v-progress-circular>
-                  </v-row>
-                </template>
+<!--                <template v-slot:placeholder>-->
+<!--                  <v-row-->
+<!--                      class="fill-height ma-0"-->
+<!--                      align="center"-->
+<!--                      justify="center"-->
+<!--                  >-->
+<!--                    <v-progress-circular-->
+<!--                        indeterminate-->
+<!--                        color="secondary"-->
+<!--                    ></v-progress-circular>-->
+<!--                  </v-row>-->
+<!--                </template>-->
               </v-img>
             </div>
           </v-carousel-item>
