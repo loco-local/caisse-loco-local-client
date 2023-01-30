@@ -1,14 +1,14 @@
 <template>
   <v-card flat>
-    <v-card flat class="mb-2">
+    <v-card flat class="mb-2" v-if="transactionItemsTotal > 0">
       <v-card-text>
         <strong v-if="areTransactionsCommited && products">
           {{ products[0].createdAt | date }}
         </strong>
       </v-card-text>
     </v-card>
-    <v-card-text>
-      <v-simple-table v-if="transactionItemsTotal > 0" class="" dense>
+    <v-card-text v-if="transactionItemsTotal > 0">
+      <v-simple-table class="" dense>
         <template v-slot:default>
 <!--          <thead>-->
 <!--          <th v-for="header in headers" :key="header.value" class="text-left pl-4 s">-->

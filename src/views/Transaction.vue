@@ -31,6 +31,9 @@
           ></v-skeleton-loader>
         </v-col>
       </v-row>
+      <TransactionDetails :products="selectedProducts" :key="detailsKey"
+                          :ardoiseUser="null"/>
+      <v-divider class="mt-4"></v-divider>
       <v-card-subtitle class="body-1 text-left mb-4 font-italic">
         Les prix sont taxes incluses
       </v-card-subtitle>
@@ -409,10 +412,6 @@
 
                 @keyup="updateModelOnKeyup($event,'personName')"
             ></v-text-field>
-          </v-card-text>
-          <v-card-text class="pb-0 pl-0 pr-0">
-            <TransactionDetails :products="selectedProducts" :key="detailsKey"
-                                :ardoiseUser="null"/>
           </v-card-text>
           <v-card-actions>
             <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
