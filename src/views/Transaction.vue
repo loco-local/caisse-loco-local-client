@@ -9,6 +9,7 @@
              color="secondary"
              :disabled="transactionItemsTotal <= 0"
              @click="showPaymentModal = true; showConfirmSnackbar= false;"
+             x-large
       >
         {{ transactionItemsTotal | currency }}
         Payer
@@ -87,14 +88,14 @@
       </v-row>
     </v-card>
     <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600" persistent top
-              style=" align-self: flex-end;">
+              style=" align-self: flex-end;" fullscreen>
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
           <v-spacer></v-spacer>
           <v-icon @click="productQuantityDialog = false">close</v-icon>
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="pb-0">
           <v-form ref="quantityForm">
             <v-row class="vh-center">
               <v-col cols="6" md="4">
@@ -126,19 +127,18 @@
             </v-row>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pt-0 mt-0">
           <v-btn @click="productQuantityDialog=false">
             Annuler
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="confirmQuantity()">
+          <v-btn color="primary" @click="confirmQuantity()" x-large class="mb-6">
             Confirmer
           </v-btn>
         </v-card-actions>
-        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="otherProductDialog" v-if="otherProductDialog" max-width="600" persistent>
+    <v-dialog v-model="otherProductDialog" v-if="otherProductDialog" max-width="600" persistent fullscreen>
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
@@ -186,22 +186,21 @@
             Annuler
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="confirmOtherProduct()">
+          <v-btn color="primary" @click="confirmOtherProduct()" x-large>
             Confirmer
           </v-btn>
         </v-card-actions>
-        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="donationProductDialog" v-if="donationProductDialog" max-width="600" persistent>
+    <v-dialog v-model="donationProductDialog" v-if="donationProductDialog" max-width="600" persistent fullscreen>
       <v-card>
-        <v-card-title class="vh-center">
+        <v-card-title class="vh-center pb-0">
           {{ selectedProduct.name }}
           <v-spacer></v-spacer>
           <v-icon @click="donationProductDialog=false">close</v-icon>
         </v-card-title>
-        <v-form ref="donationProductForm">
-          <v-card-text>
+        <v-form ref="donationProductForm" class="pb-0">
+          <v-card-text class="pb-0">
             <v-row class="vh-center">
               <v-col cols="10" md="8">
                 <v-text-field
@@ -216,6 +215,7 @@
                     :rules="[Rules.required]"
                     required
                     @keyup="updateModelOnKeyup($event,'priceOfSelectedProduct')"
+                    dense
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -226,14 +226,13 @@
             Annuler
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="confirmDonationProduct()">
+          <v-btn color="primary" @click="confirmDonationProduct()" x-large>
             Confirmer
           </v-btn>
         </v-card-actions>
-        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600" persistent top>
+    <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600" persistent top fullscreen>
       <v-card>
         <v-card-title class="vh-center">
           {{ selectedProduct.name }}
@@ -298,13 +297,25 @@
             Annuler
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="confirmActivity()">
+          <v-btn color="primary" @click="confirmActivity()" x-large>
             Confirmer
           </v-btn>
         </v-card-actions>
-        <div class="pt-16 pb-16"></div>
       </v-card>
     </v-dialog>
+    <v-snackbar
+        color="error"
+        timeout="10000"
+        v-model="insertYourNameSnackbar"
+        top
+    >
+      Veuillez saisir votre nom
+      <template v-slot:action="{ attrs }">
+        <v-btn icon dark color="" class="ml-8" @click.native="insertYourNameSnackbar = false" v-bind="attrs">
+          <v-icon color="white">close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-snackbar
         color="secondary"
         :timeout="9999999"
@@ -318,7 +329,7 @@
         Total: {{ transactionItemsTotal | currency }}
       </span>
       <v-btn color="white" class="ml-8 black--text" :disabled="selectedProducts.length === 0"
-             @click="showPaymentModal = true; showConfirmSnackbar= false;">
+             @click="showPaymentModal = true; showConfirmSnackbar= false;" x-large>
         Payer
       </v-btn>
       <template v-slot:action="{ attrs }">
@@ -327,8 +338,12 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-dialog v-model="showPaymentModal" width="900" :fullscreen="$vuetify.breakpoint.smAndDown" persistent>
+    <v-dialog v-model="showPaymentModal" width="900" fullscreen persistent>
       <v-card flat>
+        <!--        <v-card-title class="pb-0">-->
+        <!--          <v-spacer></v-spacer>-->
+        <!--          <v-icon @click="showPaymentModal=false">close</v-icon>-->
+        <!--        </v-card-title>-->
         <v-form ref="paymentForm" @submit.prevent>
           <!--        <v-card-title class="vh-center">-->
           <!--          Mode de paiement-->
@@ -409,18 +424,19 @@
                 v-model="personName"
                 :rules="[Rules.required]"
                 persistent-hint
-
-                @keyup="updateModelOnKeyup($event,'personName')"
+                @keydown="submitPaymentFormOnEnter"
             ></v-text-field>
           </v-card-text>
           <v-card-actions>
             <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-            <v-btn color="secondary"
-                   @click.native="confirmTransaction" large
-                   :loading="isWaitingForTransaction"
-                   :disabled="isWaitingForTransaction || isLoadingUsers || paymentMethod === null || (paymentMethod === 'prepaid' && prepaidUser === null)"
+            <v-btn
+                x-large
+                color="secondary"
+                @click.native="confirmTransaction" large
+                :loading="isWaitingForTransaction"
+                :disabled="isWaitingForTransaction || isLoadingUsers || paymentMethod === null || (paymentMethod === 'prepaid' && prepaidUser === null)"
             >
-              Confirmer
+              Confirmer {{ transactionItemsTotal | currency }}
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn color="" text
@@ -428,8 +444,6 @@
               Annuler
             </v-btn>
           </v-card-actions>
-          <div class="pt-16 pb-16"></div>
-          <div class="pt-16 pb-16"></div>
         </v-form>
       </v-card>
     </v-dialog>
@@ -480,10 +494,16 @@ export default {
       prepaidUser: null,
       isLoadingUsers: false,
       isWaitingForTransaction: false,
-      users: []
+      users: [],
+      insertYourNameSnackbar: false
     }
   },
   methods: {
+    submitPaymentFormOnEnter: function (event) {
+      if (event.keyCode === ENTER_KEY_CODE) {
+        this.confirmTransaction();
+      }
+    },
     updateModelOnKeyup: function (event, modelName) {
       this[modelName] = event.target.value;
     },
@@ -501,9 +521,11 @@ export default {
       }
     },
     confirmTransaction: async function () {
-      if (!this.$refs.paymentForm.validate()) {
+      if (this.paymentMethod !== 'cash' && !this.$refs.paymentForm.validate()) {
+        this.insertYourNameSnackbar = true;
         return;
       }
+      this.insertYourNameSnackbar = false;
       this.isWaitingForTransaction = true;
       if (this.paymentMethod === 'prepaid') {
         this.prepaidUser.balance -= parseFloat(this.transactionItemsTotal);

@@ -55,7 +55,7 @@
             Vous serez redirigé dans {{ disconnectTimeout }} secondes
           </v-flex>
           <v-flex md6 class="text-right">
-            <v-btn color="primary" class="pull-right" @click="redirectToLanding()">
+            <v-btn color="primary" class="pull-right" @click="redirectToLanding()" x-large>
               Terminer
             </v-btn>
           </v-flex>
