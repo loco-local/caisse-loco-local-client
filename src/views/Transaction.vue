@@ -109,7 +109,6 @@
                     v-if="selectedProduct.isPriceInKg"
                     @keydown="quantityKeydown"
                     @click:clear="confirmQuantity(0)"
-                    @keyup="updateModelOnKeyup($event,'quantityOfSelectedProduct')"
                 ></v-text-field>
                 <v-text-field
                     clearable
@@ -121,7 +120,6 @@
                     v-if="!selectedProduct.isPriceInKg"
                     @keydown="quantityKeydown"
                     @click:clear="confirmQuantity(0)"
-                    @keyup="updateModelOnKeyup($event,'quantityOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -132,7 +130,16 @@
             Annuler
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="confirmQuantity()" x-large class="mb-6">
+          <v-btn color="primary" @click="confirmQuantity()" x-large class="mb-6 pt-6 pb-6 pl-4 pr-4">
+            <v-chip color="primary" dark
+                    class="elevation-3 mr-4"
+                    style="cursor: pointer"
+                    label
+            >
+              {{ quantityOfSelectedProduct || 0 }}
+              <span v-if="selectedProduct.isPriceInKg" class="text-lowercase">kg</span>
+              <span v-if="!selectedProduct.isPriceInKg" class="text-lowercase">x</span>
+            </v-chip>
             Confirmer
           </v-btn>
         </v-card-actions>
@@ -160,7 +167,6 @@
                     @keydown="otherProductKeydown"
                     :rules="[Rules.required]"
                     required
-                    @keyup="updateModelOnKeyup($event,'priceOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -175,7 +181,6 @@
                     @keydown="otherProductKeydown"
                     :rules="[Rules.required]"
                     required
-                    @keyup="updateModelOnKeyup($event,'nameOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -187,6 +192,9 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="confirmOtherProduct()" x-large>
+            <v-chip color="primary" dark class="elevation-3 mr-4 " style="cursor: pointer" label>
+              {{ priceOfSelectedProduct || 0 }}$
+            </v-chip>
             Confirmer
           </v-btn>
         </v-card-actions>
@@ -214,7 +222,6 @@
                     @keydown="donationProductDialog"
                     :rules="[Rules.required]"
                     required
-                    @keyup="updateModelOnKeyup($event,'priceOfSelectedProduct')"
                     dense
                 ></v-text-field>
               </v-col>
@@ -227,6 +234,13 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="confirmDonationProduct()" x-large>
+            <v-chip color="primary"
+                    dark
+                    class="elevation-3 mr-4"
+                    style="cursor: pointer"
+                    label>
+              {{ priceOfSelectedProduct || 0 }}$
+            </v-chip>
             Confirmer
           </v-btn>
         </v-card-actions>
@@ -254,7 +268,6 @@
                     @keydown="activityKeydown"
                     :rules="[Rules.required]"
                     required
-                    @keyup="updateModelOnKeyup($event,'priceOfSelectedProduct')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -269,7 +282,6 @@
                     @keydown="activityKeydown"
                     :rules="[Rules.required]"
                     required
-                    @keyup="updateModelOnKeyup($event,'nameOfSelectedActivity')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -285,7 +297,6 @@
                     @keydown="activityKeydown"
                     :rules="[Rules.required]"
                     required
-                    @keyup="updateModelOnKeyup($event,'nbParticipantsOfSelectedProduct')"
 
                 ></v-text-field>
               </v-col>
@@ -298,6 +309,13 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="confirmActivity()" x-large>
+            <v-chip color="primary"
+                    dark
+                    class="elevation-3 mr-4"
+                    style="cursor: pointer"
+                    label>
+              {{ priceOfSelectedProduct || 0 }}$
+            </v-chip>
             Confirmer
           </v-btn>
         </v-card-actions>
@@ -504,9 +522,6 @@ export default {
         this.confirmTransaction();
       }
     },
-    updateModelOnKeyup: function (event, modelName) {
-      this[modelName] = event.target.value;
-    },
     handleChangePaymentMethod: async function () {
       if (this.paymentMethod === 'prepaid') {
         this.isLoadingUsers = true;
@@ -520,8 +535,8 @@ export default {
         this.prepaidUser = null;
       }
     },
-    selectedProductsRequireBuyerName : function(){
-      return this.selectedProducts.some((product)=>{
+    selectedProductsRequireBuyerName: function () {
+      return this.selectedProducts.some((product) => {
         return product.requiresBuyerName;
       });
     },
