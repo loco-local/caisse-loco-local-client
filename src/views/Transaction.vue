@@ -309,7 +309,7 @@
         v-model="insertYourNameSnackbar"
         top
     >
-      Veuillez saisir votre nom
+      <span class="body-1 font-weight-bold">Veuillez saisir votre nom</span>
       <template v-slot:action="{ attrs }">
         <v-btn icon dark color="" class="ml-8" @click.native="insertYourNameSnackbar = false" v-bind="attrs">
           <v-icon color="white">close</v-icon>
@@ -520,8 +520,13 @@ export default {
         this.prepaidUser = null;
       }
     },
+    selectedProductsRequireBuyerName : function(){
+      return this.selectedProducts.some((product)=>{
+        return product.requiresBuyerName;
+      });
+    },
     confirmTransaction: async function () {
-      if (this.paymentMethod !== 'cash' && !this.$refs.paymentForm.validate()) {
+      if ((this.paymentMethod !== 'cash' || this.selectedProductsRequireBuyerName()) && !this.$refs.paymentForm.validate()) {
         this.insertYourNameSnackbar = true;
         return;
       }

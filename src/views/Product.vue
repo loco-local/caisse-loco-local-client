@@ -26,6 +26,10 @@
               item-value="node.id"
               v-model="product.accountingCategoryId"
           ></v-autocomplete>
+          <v-checkbox
+              label="Requiert le nom de la personne à l'achat"
+              v-model="product.requiresBuyerName"
+          />
           <v-text-field v-model="product.description" label="Description"></v-text-field>
           <v-checkbox
               label="Est taxable"
