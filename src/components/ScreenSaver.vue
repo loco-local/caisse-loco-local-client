@@ -51,11 +51,19 @@ export default {
         },
         {
           isLoaded: false,
+          src: "20230205_145711.jpg"
+        },
+        {
+          isLoaded: false,
           src: "2022-08showMomo1.jpg"
         },
         {
           isLoaded: false,
-          src: "2022_Loco de haut.JPG"
+          src: "loco_de_haut.jpg"
+        },
+        {
+          isLoaded: false,
+          src: "2021_equipe_facilitation.jpg"
         },
         {
           isLoaded: false,
