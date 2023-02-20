@@ -107,6 +107,7 @@
                     suffix="kg"
                     type="number"
                     v-if="selectedProduct.isPriceInKg"
+                    hint="Utilisez le point ou la virgule pour les décimales."
                     @keydown="quantityKeydown"
                     @click:clear="confirmQuantity(0)"
                 ></v-text-field>
@@ -117,10 +118,33 @@
                     v-model="quantityOfSelectedProduct"
                     type="number"
                     size="2"
-                    v-if="!selectedProduct.isPriceInKg"
+                    v-if="!selectedProduct.isPriceInKg && selectedProduct.hasDecimalQuantity"
                     @keydown="quantityKeydown"
                     @click:clear="confirmQuantity(0)"
                 ></v-text-field>
+                <div v-if="!selectedProduct.isPriceInKg && !selectedProduct.hasDecimalQuantity">
+                  <v-btn
+                      color="primary"
+                      fab
+                      dark
+                      class="mr-8"
+                      @click="decrementQuantity()"
+                  >
+                    <v-icon>remove</v-icon>
+                  </v-btn>
+                  <strong class="text-h6">
+                    {{ quantityOfSelectedProduct }}
+                  </strong>
+                  <v-btn
+                      color="primary"
+                      fab
+                      dark
+                      class="ml-8"
+                      @click="quantityOfSelectedProduct++"
+                  >
+                    <v-icon>add</v-icon>
+                  </v-btn>
+                </div>
               </v-col>
             </v-row>
           </v-form>
@@ -129,6 +153,10 @@
           <v-btn @click="productQuantityDialog=false">
             Annuler
           </v-btn>
+          <v-spacer></v-spacer>
+          <strong class="mt-3">
+            {{totalOfSelectedProduct}} pour ce produit
+          </strong>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="confirmQuantity()" x-large class="mb-6 pt-6 pb-6 pl-4 pr-4">
             <v-chip color="primary" dark
@@ -193,7 +221,7 @@
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="confirmOtherProduct()" x-large>
             <v-chip color="primary" dark class="elevation-3 mr-4 " style="cursor: pointer" label>
-              {{ priceOfSelectedProduct || 0 }}$
+              {{ (priceOfSelectedProduct || 0) | currency }}
             </v-chip>
             Confirmer
           </v-btn>
@@ -239,7 +267,7 @@
                     class="elevation-3 mr-4"
                     style="cursor: pointer"
                     label>
-              {{ priceOfSelectedProduct || 0 }}$
+              {{ (priceOfSelectedProduct || 0) | currency }}
             </v-chip>
             Confirmer
           </v-btn>
@@ -314,7 +342,7 @@
                     class="elevation-3 mr-4"
                     style="cursor: pointer"
                     label>
-              {{ priceOfSelectedProduct || 0 }}$
+              {{ (priceOfSelectedProduct || 0) | currency }}
             </v-chip>
             Confirmer
           </v-btn>
@@ -517,6 +545,12 @@ export default {
     }
   },
   methods: {
+    decrementQuantity: function () {
+      if (this.quantityOfSelectedProduct <= 0) {
+        return;
+      }
+      this.quantityOfSelectedProduct--;
+    },
     submitPaymentFormOnEnter: function (event) {
       if (event.keyCode === ENTER_KEY_CODE) {
         this.confirmTransaction();
@@ -623,11 +657,17 @@ export default {
       if (product.isDonation) {
         return this.selectDonationProduct();
       }
+
       this.productQuantityDialog = true;
-      await this.$nextTick();
-      setTimeout(() => {
-        this.$refs.quantityInput.$el.querySelector("input").focus()
-      })
+      if (!this.selectedProduct.hasDecimalQuantity && !this.selectedProduct.isPriceInKg) {
+        this.quantityOfSelectedProduct = 1;
+      } else {
+        await this.$nextTick();
+        setTimeout(() => {
+          this.$refs.quantityInput.$el.querySelector("input").focus()
+        })
+      }
+
     },
     selectActivityProduct: async function () {
       this.activityDialog = true;
@@ -731,6 +771,16 @@ export default {
     });
     this.updateTransactionItemsTotal();
     this.isLoading = false;
+  },
+  computed: {
+    totalOfSelectedProduct: function () {
+      if (isNaN(this.quantityOfSelectedProduct)) {
+        return "... $"
+      }
+      return this.$options.filters.currency(
+          (this.quantityOfSelectedProduct || 0) * (this.priceOfSelectedProduct || 0)
+      )
+    }
   }
 }
 </script>
