@@ -28,6 +28,9 @@
             class="mx-4"
         ></v-text-field>
       </template>
+      <template v-slot:item.Transaction.totalPrice="{ item }">
+        {{ Math.abs(item.Transaction.totalPrice) | currency }}
+      </template>
       <template v-slot:item.description="{ item }">
         {{ item.description }}
         <span v-if="item.info">{{ item.info.name }}</span>
@@ -72,7 +75,10 @@ export default {
         text: "# Facture",
         value: 'TransactionId'
       },
-      // totalPrice: DataTypes.DOUBLE,
+      {
+        text: "Total Facture",
+        value: 'Transaction.totalPrice'
+      },
       // info: DataTypes.JSON,
       // totalPriceAfterRebate: DataTypes.DOUBLE,
       // rebates: DataTypes.JSON
@@ -89,7 +95,7 @@ export default {
         value: 'quantity'
       },
       {
-        text: "Prix total",
+        text: "Total item",
         value: 'totalPrice'
       },
       {
@@ -111,7 +117,7 @@ export default {
     })
     return {
       tableOptions: {
-        sortBy: ['createdAt'],
+        sortBy: ['TransactionId'],
         sortDesc: [true]
       },
       search: null,
