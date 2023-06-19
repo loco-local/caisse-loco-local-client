@@ -39,7 +39,9 @@
         {{ item.price | currency }}
       </template>
       <template v-slot:item.totalPrice="{ item }">
-        {{ item.totalPrice | currency }}
+        <strong>
+          {{ item.totalPrice | currency }}
+        </strong>
       </template>
       <template v-slot:item.tps="{ item }">
         {{ item.tps | currency }}

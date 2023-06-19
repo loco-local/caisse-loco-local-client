@@ -1,8 +1,9 @@
 <template>
-  <v-overlay :value="isAppIdle" v-if="isAppIdle" z-index="999999" v-breathing-colors="locoColors">
+  <v-overlay :value="value" v-if="value" z-index="999999" v-breathing-colors="locoColors">
     <v-card>
       <v-card-text>
-        <v-carousel v-model="imageIndex" width="100%" height="100%" :show-arrows="false"  hide-delimiters interval="6000" :cycle="true">
+        <v-carousel v-model="imageIndex" width="100%" height="100%" :show-arrows="false" hide-delimiters interval="6000"
+                    :cycle="true">
           <v-carousel-item
               v-for="(image, i) in images"
               :key="i"
@@ -10,18 +11,18 @@
           >
             <div>
               <v-img :src="getImgUrl(image)">
-<!--                <template v-slot:placeholder>-->
-<!--                  <v-row-->
-<!--                      class="fill-height ma-0"-->
-<!--                      align="center"-->
-<!--                      justify="center"-->
-<!--                  >-->
-<!--                    <v-progress-circular-->
-<!--                        indeterminate-->
-<!--                        color="secondary"-->
-<!--                    ></v-progress-circular>-->
-<!--                  </v-row>-->
-<!--                </template>-->
+                <!--                <template v-slot:placeholder>-->
+                <!--                  <v-row-->
+                <!--                      class="fill-height ma-0"-->
+                <!--                      align="center"-->
+                <!--                      justify="center"-->
+                <!--                  >-->
+                <!--                    <v-progress-circular-->
+                <!--                        indeterminate-->
+                <!--                        color="secondary"-->
+                <!--                    ></v-progress-circular>-->
+                <!--                  </v-row>-->
+                <!--                </template>-->
               </v-img>
             </div>
           </v-carousel-item>
@@ -38,6 +39,7 @@ export default {
   name: "ScreenSaver",
   data: function () {
     return {
+      value: true,
       imageIndex: 0,
       locoColors: BreathingColors.buildLocoColors(),
       images: [
@@ -80,6 +82,11 @@ export default {
       ]
     }
   },
+  computed: {
+    isIdle: function () {
+      return this.$store.state.idleVue.isIdle
+    }
+  },
   mounted: function () {
     this.locoColors = BreathingColors.buildLocoColors();
     this.shuffleImages();
@@ -88,18 +95,23 @@ export default {
     getImgUrl(image) {
       return require('@/assets/screensaver/' + image.src)
     },
-    shuffleImages: function(){
+    shuffleImages: function () {
       for (let i = this.images.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [this.images[i], this.images[j]] = [this.images[j], this.images[i]];
       }
     }
   },
-  watch:{
-    isAppIdle: function(){
-      if(this.isAppIdle === false){
+  watch: {
+    isAppIdle: function () {
+      if (this.isAppIdle === false) {
         this.shuffleImages();
       }
+    },
+    isIdle: function () {
+      setTimeout(()=>{
+        this.value = this.isIdle;
+      }, 100)
     }
   }
 }
