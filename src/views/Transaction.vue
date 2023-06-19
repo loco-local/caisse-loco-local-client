@@ -1,7 +1,7 @@
 <template>
   <Page>
     <v-toolbar class="mb-0" elevation="0">
-      <v-btn @click="back" class="mt-3 mb-3 ml-3">
+      <v-btn @click="showConfirmGoBackDialog" class="mt-3 mb-3 ml-3">
         Annuler
       </v-btn>
       <v-spacer></v-spacer>
@@ -87,6 +87,22 @@
         </v-col>
       </v-row>
     </v-card>
+    <v-dialog v-model="confirmGoBackDialog" width="600">
+      <v-card>
+        <v-card-title>
+          Vraiment annuler la transaction ?
+        </v-card-title>
+        <v-card-actions>
+          <v-btn @click="back" color="secondary">
+            Oui
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn @click="confirmGoBackDialog=false">
+            Non
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600" persistent top
               style=" align-self: flex-end;" fullscreen>
       <v-card>
@@ -155,7 +171,7 @@
           </v-btn>
           <v-spacer></v-spacer>
           <strong class="mt-3">
-            {{totalOfSelectedProduct}} pour ce produit
+            {{ totalOfSelectedProduct }} pour ce produit
           </strong>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="confirmQuantity()" x-large class="mb-6 pt-6 pb-6 pl-4 pr-4">
@@ -541,7 +557,8 @@ export default {
       isLoadingUsers: false,
       isWaitingForTransaction: false,
       users: [],
-      insertYourNameSnackbar: false
+      insertYourNameSnackbar: false,
+      confirmGoBackDialog: false
     }
   },
   methods: {
@@ -637,8 +654,17 @@ export default {
         this.confirmQuantity();
       }
     },
+    showConfirmGoBackDialog: function () {
+      if (this.isEmptyTransaction()) {
+        return this.back();
+      }
+      this.confirmGoBackDialog = true;
+    },
     back: function () {
       window.history.back()
+    },
+    isEmptyTransaction: function () {
+      return this.selectedProducts.length === 0;
     },
     selectProduct: async function (product) {
       this.selectedProduct = product;
