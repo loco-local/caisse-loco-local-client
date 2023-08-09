@@ -96,7 +96,7 @@ export default {
   computed: {
     isAdminPage: function () {
       return [
-        "Administration",
+        "AdministrationLanding",
         "ProductsPage",
         "ProductEdit",
         "ProductCreate",
