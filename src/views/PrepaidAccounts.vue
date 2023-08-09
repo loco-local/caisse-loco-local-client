@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <PageWrap>
     <v-card flat>
       <v-card-actions class="mb-4">
         <v-btn to="/">
@@ -55,7 +55,7 @@
         </v-layout>
       </v-data-table>
     </v-card>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
@@ -64,7 +64,7 @@ import UserService from "@/service/UserService";
 export default {
   name: "PrepaidAccounts",
   components: {
-    Page: () => import('@/components/Page')
+    PageWrap: () => import('@/components/PageWrap')
   },
   data: function () {
     return {

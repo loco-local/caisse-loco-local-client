@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <PageWrap>
     <v-toolbar class="mb-0" elevation="0">
       <v-btn @click="showConfirmGoBackDialog" class="mt-3 mb-3 ml-3">
         Annuler
@@ -513,7 +513,7 @@
                           :amount="transactionItemsTotal"
                           :paymentMethod="paymentMethod"
                           :accountBalance="paymentMethod === 'prepaid' && prepaidUser !== null ? prepaidUser.balance: null"></CompletePaymentModal>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
@@ -524,9 +524,9 @@ import UserService from "@/service/UserService";
 
 const ENTER_KEY_CODE = 13;
 export default {
-  name: "Transaction",
+  name: "TransactionPage",
   components: {
-    Page: () => import('@/components/Page'),
+    PageWrap: () => import('@/components/PageWrap'),
     TransactionDetails: () => import('@/components/TransactionDetails'),
     CompletePaymentModal: () => import('@/components/CompletePaymentModal'),
   },

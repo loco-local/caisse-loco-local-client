@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <PageWrap>
     <div class="text-left mb-4">
       <v-btn to="/">
         Annuler
@@ -188,7 +188,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
@@ -198,7 +198,7 @@ import TransactionService from "@/service/TransactionService";
 export default {
   name: "PrepaidAccount",
   components: {
-    Page: () => import('@/components/Page'),
+    PageWrap: () => import('@/components/PageWrap'),
     CompletePaymentModal: () => import('@/components/CompletePaymentModal'),
   },
   data: function () {

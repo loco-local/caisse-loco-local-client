@@ -1,18 +1,18 @@
 <template>
-  <Page>
+  <PageWrap>
     <v-card flat>
       <v-card-title>
         Administration
       </v-card-title>
     </v-card>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
 export default {
-  name: "Administration",
+  name: "AdministrationLanding",
   components: {
-    Page: () => import('@/components/Page')
+    PageWrap: () => import('@/components/PageWrap')
   }
 }
 </script>

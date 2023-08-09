@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "Page"
+  name: "PageWrap"
 }
 </script>
 

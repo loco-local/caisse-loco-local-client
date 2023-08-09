@@ -101,7 +101,7 @@ export default {
     redirectToLanding: function () {
       clearInterval(this.timeoutInterval)
       this.$router.push({
-        name: 'Landing'
+        name: 'LandingPage'
       })
     }
   }

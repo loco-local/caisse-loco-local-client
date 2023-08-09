@@ -1,5 +1,5 @@
 <template>
-  <Page style="height:100%;" class="vh-center">
+  <PageWrap style="height:100%;" class="vh-center">
     <v-card flat>
       <v-card-title class="vh-center">
         Caisse du Loco Local
@@ -91,16 +91,16 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
 import BreathingColors from '@/BreathingColors'
 
 export default {
-  name: "Landing",
+  name: "LandingPage",
   components: {
-    Page: () => import('@/components/Page')
+    PageWrap: () => import('@/components/PageWrap')
   },
   data: () => {
     return {

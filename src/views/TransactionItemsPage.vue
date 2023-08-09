@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <PageWrap>
     <h2 class="mb-8">Transactions</h2>
     <v-card class="mb-12">
       <v-card-title>
@@ -79,7 +79,7 @@
         Transfert Bancaire
       </div>
     </TransactionItems>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
@@ -88,9 +88,9 @@ import {sub, startOfMonth, endOfMonth, format, startOfDay, endOfDay} from 'date-
 import Transaction from "@/Transaction";
 
 export default {
-  name: "TransactionItemsPage",
+  name: "TransactionItemsPageWrap",
   components: {
-    Page: () => import('@/components/Page'),
+    PageWrap: () => import('@/components/PageWrap'),
     TransactionItems: () => import('@/components/TransactionItems'),
   },
   data: function () {

@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <PageWrap>
     <v-card>
       <v-card-text>
         <v-form name="productForm" ref="productForm">
@@ -118,7 +118,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
@@ -128,9 +128,9 @@ import CategoryService from "@/service/CategoryService";
 import WaveAccountingService from "@/service/WaveAccountingService";
 
 export default {
-  name: "Product",
+  name: "ProductPage",
   components: {
-    Page: () => import('@/components/Page'),
+    PageWrap: () => import('@/components/PageWrap'),
   },
   data: function () {
     return {

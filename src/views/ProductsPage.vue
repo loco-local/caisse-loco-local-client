@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <PageWrap>
     <v-card flat>
       <v-card-actions class="mb-4">
         <v-spacer></v-spacer>
@@ -62,16 +62,16 @@
         </v-layout>
       </v-data-table>
     </v-card>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
 import ProductService from "@/service/ProductService";
 
 export default {
-  name: "Products",
+  name: "ProductsPage",
   components: {
-    Page: () => import('@/components/Page'),
+    PageWrap: () => import('@/components/PageWrap'),
   },
   mounted: async function () {
     const response = await ProductService.listAll();

@@ -6,23 +6,23 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/',
-        name: 'Landing',
-        component: () => import('../views/Landing.vue')
+        name: 'LandingPage',
+        component: () => import('../views/LandingPage.vue')
     },
     {
         path: '/kiosque',
         name: 'Kiosque',
-        component: () => import('../views/Landing.vue')
+        component: () => import('../views/LandingPage.vue')
     },
     {
         path: '/transaction',
-        name: 'Transaction',
-        component: () => import('../views/Transaction.vue')
+        name: 'TransactionPage',
+        component: () => import('../views/TransactionPage.vue')
     },
     {
         path: '/fafa',
-        name: 'Administration',
-        component: () => import('../views/Administration.vue')
+        name: 'AdministrationLanding',
+        component: () => import('../views/AdministrationLanding.vue')
     },
     {
         path: '/comptes',
@@ -41,23 +41,23 @@ const routes = [
     },
     {
         path: '/produits',
-        name: 'Products',
-        component: () => import('../views/Products.vue')
+        name: 'ProductsPage',
+        component: () => import('../views/ProductsPage.vue')
     },
     {
         path: '/categories-produits',
-        name: 'Categories',
-        component: () => import('../views/Catégories.vue')
+        name: 'CategoriesPage',
+        component: () => import('../views/CategoriesPage.vue')
     },
     {
         path: '/produit/:productId',
         name: 'ProductEdit',
-        component: () => import('../views/Product.vue')
+        component: () => import('../views/ProductPage.vue')
     },
     {
         path: '/produit',
         name: 'ProductCreate',
-        component: () => import('../views/Product.vue')
+        component: () => import('../views/ProductPage.vue')
     },
     {
         path: '/transactions',

@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <PageWrap>
     <v-card flat>
       <v-card-actions class="mb-4">
         <v-spacer></v-spacer>
@@ -84,16 +84,16 @@
         </v-btn>
       </template>
     </v-snackbar>
-  </Page>
+  </PageWrap>
 </template>
 
 <script>
 import CategoryService from "@/service/CategoryService";
 
 export default {
-  name: "Catégories",
+  name: "CategoriesPage",
   components: {
-    Page: () => import('@/components/Page'),
+    PageWrap: () => import('@/components/PageWrap'),
   },
   data: function () {
     return {
