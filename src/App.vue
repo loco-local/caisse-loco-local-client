@@ -19,7 +19,7 @@
         </router-link>
       </div>
       <v-spacer></v-spacer>
-      <v-btn to="/comptes" text v-if="$route.name === 'Landing' || $route.name === 'Kiosque'">
+      <v-btn to="/comptes" text v-if="$route.name === 'LandingPage' || $route.name === 'Kiosque'">
         <v-icon left size="25">
           account_circle
         </v-icon>
