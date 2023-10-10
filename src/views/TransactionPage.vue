@@ -581,6 +581,14 @@ export default {
         this.users = response.data.map((user) => {
           user.text = user.firstname + " " + user.lastname + " | " + this.$options.filters.currency(user.balance);
           return user;
+        }).sort((a, b) => {
+          if (a.text < b.text) {
+            return -1;
+          }
+          if (a.text > b.text) {
+            return 1;
+          }
+          return 0;
         })
         this.isLoadingUsers = false;
       } else {

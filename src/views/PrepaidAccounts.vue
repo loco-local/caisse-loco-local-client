@@ -120,6 +120,16 @@ export default {
     this.prepaidAccounts = response.data.map(function (account) {
       account.balance = account.balance || 0;
       return account;
+    }).sort((a, b) => {
+      const aFullname = a.firstname + " " + a.lastname;
+      const bFullname = b.firstname + " " + b.lastname;
+      if (aFullname < bFullname) {
+        return -1;
+      }
+      if (aFullname > bFullname) {
+        return 1;
+      }
+      return 0;
     })
   }
 }
