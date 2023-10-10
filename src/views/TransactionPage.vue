@@ -462,6 +462,7 @@
                     item-text="text"
                     return-object
                     v-model="prepaidUser"
+                    :rules="[Rules.required]"
                     @change="personName = prepaidUser.firstname + ' ' + prepaidUser.lastname"
                 >
                   <template v-slot:item="{ item }">
