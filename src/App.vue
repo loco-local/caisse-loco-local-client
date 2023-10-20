@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <ScreenSaver></ScreenSaver>
     <v-app-bar
         app
         color="white"
@@ -70,10 +71,20 @@
 </template>
 
 <script>
+import store from '@/store'
+import Vue from "vue";
+import IdleVue from "idle-vue";
 import BreathingColors from "@/BreathingColors";
+
+const fiveMinutesInMs = 300000;
+
+Vue.use(IdleVue, {idleTime: fiveMinutesInMs, store})
 
 export default {
   name: 'App',
+  components: {
+    ScreenSaver: () => import('@/components/ScreenSaver')
+  },
   mounted: function () {
   },
   data: () => {
