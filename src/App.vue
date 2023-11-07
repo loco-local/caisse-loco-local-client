@@ -4,14 +4,14 @@
     <v-app-bar
         app
         color="white"
-        class="mt-16"
+        height="120"
     >
-      <div class="d-flex align-center">
+      <div class="d-flex align-center mb-2" style="margin-top: auto;">
         <v-app-bar-nav-icon @click.stop="adminMenu = !adminMenu" v-if="isAdminPage"></v-app-bar-nav-icon>
         <router-link to="/">
           <v-img
               alt="Logo Loco Local"
-              class="shrink mr-2"
+              class="shrink mr-2 align-self-end"
               contain
               :src="require('@/assets/logo-loco-horizontal.png')"
               transition="scale-transition"
@@ -20,7 +20,7 @@
         </router-link>
       </div>
       <v-spacer></v-spacer>
-      <v-btn to="/comptes" text v-if="$route.name === 'LandingPage' || $route.name === 'Kiosque'">
+      <v-btn to="/comptes" text v-if="$route.name === 'LandingPage' || $route.name === 'Kiosque'" class="d-flex align-center" style="margin-top: auto;">
         <v-icon left size="25">
           account_circle
         </v-icon>

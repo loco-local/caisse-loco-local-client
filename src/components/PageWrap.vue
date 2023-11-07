@@ -1,6 +1,6 @@
 <template>
   <v-container
-      class="pt-16"
+      class="pt-16 mt-6"
   >
     <v-row justify="center"
            style="margin-top:64px;margin-bottom:120px;"
