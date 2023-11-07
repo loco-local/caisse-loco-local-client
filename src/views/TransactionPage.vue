@@ -191,7 +191,7 @@
     </v-dialog>
     <v-dialog v-model="otherProductDialog" v-if="otherProductDialog" max-width="600" persistent fullscreen>
       <v-card>
-        <v-card-title class="vh-center">
+        <v-card-title class="vh-center pt-16">
           {{ selectedProduct.name }}
           <v-spacer></v-spacer>
           <v-icon @click="otherProductDialog=false">close</v-icon>
@@ -246,7 +246,7 @@
     </v-dialog>
     <v-dialog v-model="donationProductDialog" v-if="donationProductDialog" max-width="600" persistent fullscreen>
       <v-card>
-        <v-card-title class="vh-center pb-0">
+        <v-card-title class="vh-center pb-0 pt-16">
           {{ selectedProduct.name }}
           <v-spacer></v-spacer>
           <v-icon @click="donationProductDialog=false">close</v-icon>
@@ -292,7 +292,7 @@
     </v-dialog>
     <v-dialog v-model="activityDialog" v-if="activityDialog" max-width="600" persistent top fullscreen>
       <v-card>
-        <v-card-title class="vh-center">
+        <v-card-title class="vh-center pt-16">
           {{ selectedProduct.name }}
           <v-spacer></v-spacer>
           <v-icon @click="activityDialog=false">close</v-icon>
