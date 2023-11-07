@@ -1,5 +1,11 @@
 <template>
-  <v-overlay :value="value" v-if="value" z-index="999999" v-breathing-colors="locoColors">
+  <v-overlay
+      :value="value"
+      v-if="value"
+      z-index="999999"
+      v-breathing-colors="locoColors"
+      @click="overlayClick"
+  >
     <v-card>
       <v-card-text>
         <v-carousel v-model="imageIndex" width="100%" height="100%" :show-arrows="false" hide-delimiters interval="6000"
@@ -92,6 +98,9 @@ export default {
     this.shuffleImages();
   },
   methods: {
+    overlayClick() {
+      this.value = false;
+    },
     getImgUrl(image) {
       return require('@/assets/screensaver/' + image.src)
     },
@@ -109,7 +118,7 @@ export default {
       }
     },
     isIdle: function () {
-      setTimeout(()=>{
+      setTimeout(() => {
         this.value = this.isIdle;
       }, 100)
     }
