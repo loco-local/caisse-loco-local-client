@@ -4,6 +4,7 @@
     <v-app-bar
         app
         color="white"
+        class="mt-16"
     >
       <div class="d-flex align-center">
         <v-app-bar-nav-icon @click.stop="adminMenu = !adminMenu" v-if="isAdminPage"></v-app-bar-nav-icon>

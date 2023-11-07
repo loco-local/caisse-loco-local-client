@@ -1,5 +1,7 @@
 <template>
-  <v-container>
+  <v-container
+      class="pt-16"
+  >
     <v-row justify="center"
            style="margin-top:64px;margin-bottom:120px;"
            :class="{

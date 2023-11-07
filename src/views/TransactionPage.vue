@@ -106,7 +106,7 @@
     <v-dialog v-model="productQuantityDialog" v-if="productQuantityDialog" max-width="600" persistent top
               style=" align-self: flex-end;" fullscreen>
       <v-card>
-        <v-card-title class="vh-center">
+        <v-card-title class="vh-center pt-16">
           {{ selectedProduct.name }}
           <v-spacer></v-spacer>
           <v-icon @click="productQuantityDialog = false">close</v-icon>
@@ -406,7 +406,7 @@
         <!--          <v-spacer></v-spacer>-->
         <!--          <v-icon @click="showPaymentModal=false">close</v-icon>-->
         <!--        </v-card-title>-->
-        <v-form ref="paymentForm" @submit.prevent>
+        <v-form ref="paymentForm" @submit.prevent class="pt-16">
           <!--        <v-card-title class="vh-center">-->
           <!--          Mode de paiement-->
           <!--        </v-card-title>-->
