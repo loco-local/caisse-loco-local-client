@@ -17,6 +17,11 @@
           Modes de paiements
         </v-btn>
       </v-card-actions>
+      <v-card-actions class="vh-center mt-4" v-if="!isFullScreen">
+        <v-btn @click="goFullScreen()">
+          S.V.P appuyez sur ce bouton pour aller en mode plein écran
+        </v-btn>
+      </v-card-actions>
     </v-card>
     <v-dialog v-model="paymentMethodsDialog" width="600">
       <v-card>
@@ -97,7 +102,7 @@
           cols="12"
       >
         <span style="margin-bottom:-10px;">
-          Assurez-vous de bien pouvoir lire ce texte tout en étant debout lorsque vous placez la tablette dans sa boîte en bois.
+          Assurez-vous de bien pouvoir lire ce texte, tout en étant debout, lorsque vous placez la tablette dans sa boîte en bois.
         </span>
       </v-col>
     </v-footer>
@@ -116,25 +121,31 @@ export default {
     return {
       locoColors: BreathingColors.buildLocoColors(),
       fullscreenDialog: false,
-      paymentMethodsDialog: false
+      paymentMethodsDialog: false,
+      isFullScreen: true
     }
   },
   mounted: function () {
     this.locoColors = BreathingColors.buildLocoColors();
-    if (this.$route.name === "Kiosque" && !this.isFullScreen()) {
+    this.isFullScreen = isFullScreen()
+    if (this.$route.name === "Kiosque" && !this.isFullScreen) {
       this.fullscreenDialog = true;
     }
   },
   methods: {
-    isFullScreen: function () {
-      return document.fullscreenElement || document.webkitFullscreenElement ||
-          document.mozFullScreenElement;
-    },
     goFullScreen: function () {
       document.documentElement.webkitRequestFullScreen();
       this.fullscreenDialog = false;
+      setTimeout(() => {
+        this.isFullScreen = isFullScreen();
+      }, 500)
     }
   }
+}
+
+function isFullScreen() {
+  return document.fullscreenElement || document.webkitFullscreenElement ||
+      document.mozFullScreenElement;
 }
 </script>
 
