@@ -1,10 +1,15 @@
 import Vue from 'vue'
 
+const numberRegex = /^[+-]?\d*\.?\d+(?:[Ee][+-]?\d+)?$/
 export default {
     setup: function () {
         Vue.filter('currency', function (value) {
-            if (typeof value !== 'number') {
-                return value
+            if (value === null || value === undefined) {
+                return value;
+            }
+            let isNumber = String(value).match(numberRegex);
+            if (isNumber === null) {
+                return value;
             }
             let formatter = new Intl.NumberFormat('fr-CA', {
                 style: 'currency',

@@ -91,6 +91,16 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-footer padless absolute>
+      <v-col
+          class="vh-center"
+          cols="12"
+      >
+        <span style="margin-bottom:-10px;">
+          Assurez-vous de bien pouvoir lire ce texte tout en étant debout lorsque vous placez la tablette dans sa boîte en bois.
+        </span>
+      </v-col>
+    </v-footer>
   </PageWrap>
 </template>
 

@@ -298,7 +298,7 @@
           <v-icon @click="activityDialog=false">close</v-icon>
         </v-card-title>
         <v-form ref="activityForm">
-          <v-card-text>
+          <v-card-text class="pa-0">
             <v-row class="vh-center">
               <v-col cols="10" md="8">
                 <v-text-field
@@ -316,7 +316,7 @@
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-text>
+          <v-card-text class="pa-0">
             <v-row class="vh-center">
               <v-col cols="10" md="8">
                 <v-text-field
@@ -330,7 +330,7 @@
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-text>
+          <v-card-text class="pa-0">
             <v-row class="vh-center">
               <v-col cols="10" md="8">
                 <v-text-field
